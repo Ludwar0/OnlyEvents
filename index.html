@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Only Events | Premium Event Management</title>
+<link rel="icon" href="images/oe_logo.jpg" type="image/jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<style>
+    #map { height: 400px; width: 100%; border-radius: 8px; margin-top: 20px; }
+    
+    .fab-support {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--gold);
+      color: var(--dark);
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 1000;
+      transition: transform 0.2s;
+    }
+    .fab-support:hover {
+      transform: scale(1.05);
+    }
+    .support-menu {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      z-index: 999;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 200px;
+    }
+    .support-link {
+      padding: 12px 15px;
+      text-decoration: none;
+      color: var(--dark);
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .support-link:hover {
+      background: #f9f9f9;
+      color: var(--primary);
+    }
+    .support-link:last-child {
+      border-bottom: none;
+    }
+</style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" style="display: flex; align-items: center; gap: 10px;">
+    <img src="images/oe_logo.jpg" alt="Only Events Logo" style="height: 35px; width: 35px; border-radius: 8px; object-fit: cover;">
+    Only <span>Events</span>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('book')">Book an Event</a>
+    <a onclick="showPage('pricing')">Rate Card</a>
+    <a onclick="showPage('marketplace')">Providers</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-tab-btn" onclick="showPage('admin')">⚙ Admin</button>
+    <button class="nav-cta" onclick="showPage('book')">Book Now</button>
+  </div>
+</nav>
+
+<!-- =================== HOME PAGE =================== -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div>
+      <div class="hero-badge">🌟 Kenya's Premier Event Management Platform</div>
+      <h1>Every Celebration<br>Deserves <em>Perfection</em></h1>
+      <p>From intimate family gatherings to grand weddings, Only Events delivers flawless experiences with Gold, Silver & Bronze packages tailored for every occasion.</p>
+      <div class="hero-btns">
+        <button class="btn-gold" onclick="showPage('book')">Book Your Event</button>
+        <button class="btn-outline" onclick="showPage('marketplace')">Browse Providers</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">500+</div>
+          <div class="hero-stat-lbl">Events Managed</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">120+</div>
+          <div class="hero-stat-lbl">Service Providers</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">98%</div>
+          <div class="hero-stat-lbl">Client Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="max-width:1100px;margin:0 auto;padding:0 2rem 5rem;">
+    <div class="section-label">Event Categories</div>
+    <div class="section-title">What Are You Celebrating?</div>
+    <div class="section-sub">We handle every occasion with care, precision, and flair.</div>
+    <div class="event-types-grid">
+      <div class="event-card" onclick="selectEventType(this,'Wedding')">
+        <span class="event-icon">💒</span>
+        <h3>Wedding</h3>
+        <p>Ceremony & reception</p>
+      </div>
+      <div class="event-card" onclick="selectEventType(this,'Ruracio')">
+        <span class="event-icon">🤝</span>
+        <h3>Ruracio</h3>
+        <p>Traditional dowry ceremony</p>
+      </div>
+      <div class="event-card" onclick="selectEventType(this,'Funeral / Memorial')">
+        <span class="event-icon">🕊️</span>
+        <h3>Funeral / Memorial</h3>
+        <p>Dignified farewell service</p>
+      </div>
+      <div class="event-card" onclick="selectEventType(this,'Corporate Event')">
+        <span class="event-icon">💼</span>
+        <h3>Corporate</h3>
+        <p>Conferences & launches</p>
+      </div>
+      <div class="event-card" onclick="selectEventType(this,'Birthday Party')">
+        <span class="event-icon">🎂</span>
+        <h3>Birthday</h3>
+        <p>Kids to adult parties</p>
+      </div>
+      <div class="event-card" onclick="selectEventType(this,'Graduation')">
+        <span class="event-icon">🎓</span>
+        <h3>Graduation</h3>
+        <p>Academic milestones</p>
+      </div>
+      <div class="event-card" onclick="selectEventType(this,'Baby Shower')">
+        <span class="event-icon">🍼</span>
+        <h3>Baby Shower</h3>
+        <p>Welcome the new arrival</p>
+      </div>
+      <div class="event-card" onclick="selectEventType(this,'Other')">
+        <span class="event-icon">✨</span>
+        <h3>Other</h3>
+        <p>Tell us your occasion</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2rem;">
+      <button class="btn-gold" onclick="showPage('book')">Continue to Booking →</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== PRICING PAGE =================== -->
+<div id="page-pricing" class="page">
+  <div class="section">
+    <div class="section-label">Rate Card</div>
+    <div class="section-title">Choose Your Package</div>
+    <div class="section-sub">Transparent pricing across three tiers — choose what fits your vision and budget.</div>
+    <div class="pricing-grid">
+
+      <!-- BRONZE -->
+      <div class="pricing-card">
+        <div class="pricing-badge badge-bronze">Bronze Package</div>
+        <div class="pricing-tier tier-bronze">Bronze</div>
+        <div class="pricing-price">KES 50,000</div>
+        <div class="pricing-per">starting price · events up to 100 guests</div>
+        <div class="pricing-desc">Essential coverage for intimate gatherings. Everything you need, nothing you don't.</div>
+        <ul class="pricing-features">
+          <li>Event coordinator (1 day)</li>
+          <li>Basic décor setup</li>
+          <li>1 truck / transport vehicle</li>
+          <li>Tent & basic furniture</li>
+          <li>Standard PA system</li>
+          <li>Event photography (4 hrs)</li>
+          <li>Post-event cleanup</li>
+        </ul>
+        <button class="btn-tier btn-tier-bronze" onclick="openPayment('Bronze', 50000)">Book Bronze Package</button>
+      </div>
+
+      <!-- SILVER -->
+      <div class="pricing-card featured">
+        <div class="pricing-badge badge-silver">Most Popular</div>
+        <div class="pricing-tier tier-silver">Silver</div>
+        <div class="pricing-price">KES 120,000</div>
+        <div class="pricing-per">starting price · events up to 300 guests</div>
+        <div class="pricing-desc">The complete experience for mid-sized events. Premium finish, professional execution.</div>
+        <ul class="pricing-features">
+          <li>Senior event manager + team</li>
+          <li>Premium décor & floral arrangements</li>
+          <li>2 trucks + equipment vehicle</li>
+          <li>Marquee tent & chair covers</li>
+          <li>Professional sound & lighting</li>
+          <li>Full-day photography & video</li>
+          <li>MC services included</li>
+          <li>Catering coordination</li>
+          <li>Post-event cleanup</li>
+        </ul>
+        <button class="btn-tier btn-tier-silver" onclick="openPayment('Silver', 120000)">Book Silver Package</button>
+      </div>
+
+      <!-- GOLD -->
+      <div class="pricing-card">
+        <div class="pricing-badge badge-gold">Premium</div>
+        <div class="pricing-tier tier-gold">Gold</div>
+        <div class="pricing-price">KES 280,000</div>
+        <div class="pricing-per">starting price · events up to 1000 guests</div>
+        <div class="pricing-desc">Uncompromising luxury for milestone occasions. Only the finest — because you deserve it.</div>
+        <ul class="pricing-features">
+          <li>Dedicated event director</li>
+          <li>Luxury décor, draping & centrepieces</li>
+          <li>Full fleet (4+ trucks)</li>
+          <li>Red carpet & VIP access setup</li>
+          <li>Concert-grade sound & stage lighting</li>
+          <li>Cinematic photography & live streaming</li>
+          <li>Professional MC & entertainment</li>
+          <li>Full catering & bar service</li>
+          <li>Bridal/VIP suite arrangement</li>
+          <li>Pre & post event consultation</li>
+        </ul>
+        <button class="btn-tier btn-tier-gold" onclick="openPayment('Gold', 280000)">Book Gold Package</button>
+      </div>
+    </div>
+
+    <div style="margin-top:2.5rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;">
+      <div style="font-weight:600;font-size:0.95rem;margin-bottom:0.5rem;">💡 Need a custom quote?</div>
+      <div style="font-size:0.875rem;color:var(--muted);margin-bottom:1rem;">All packages are adjustable. We'll tailor pricing based on your exact guest count, venue, and requirements.</div>
+      <button class="btn-gold" onclick="showPage('book')">Request Custom Quote →</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== BOOKING PAGE =================== -->
+<div id="page-book" class="page">
+  <div class="section">
+    <div class="section-label">Book an Event</div>
+    <div class="section-title">Let's Plan Your Day</div>
+    <div class="section-sub">Fill in your details and we'll get back to you within 24 hours with a confirmed plan and payment schedule.</div>
+
+    <div class="booking-section">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:0.25rem;">Event Details</h3>
+      <p style="font-size:0.82rem;color:var(--muted);">All fields are required for an accurate quote.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="f-name" placeholder="Jane Wanjiku">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="f-phone" placeholder="+254 700 000 000">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="f-email" placeholder="jane@example.com">
+        </div>
+        <div class="form-group">
+          <label>ID / National ID</label>
+          <input type="text" id="f-id" placeholder="12345678">
+        </div>
+        <div class="form-group">
+          <label>Event Type</label>
+          <select id="f-type">
+            <option value="">Select event type...</option>
+            <option>Wedding</option>
+            <option>Ruracio (Traditional Dowry)</option>
+            <option>Funeral / Memorial</option>
+            <option>Corporate Event</option>
+            <option>Birthday Party</option>
+            <option>Graduation</option>
+            <option>Baby Shower</option>
+            <option>Church / Religious Event</option>
+            <option>Anniversary Celebration</option>
+            <option>Product Launch</option>
+            <option>Concert / Entertainment</option>
+            <option>Other (specify below)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Package</label>
+          <select id="f-package">
+            <option value="">Select package...</option>
+            <option value="Bronze">Bronze – from KES 50,000</option>
+            <option value="Silver">Silver – from KES 120,000</option>
+            <option value="Gold">Gold – from KES 280,000</option>
+            <option value="Custom">Custom Quote</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Event Date</label>
+          <input type="date" id="f-date">
+        </div>
+        <div class="form-group">
+          <label>Expected Guests</label>
+          <input type="number" id="f-guests" placeholder="e.g. 150">
+        </div>
+        <div class="form-group">
+          <label>Venue / Location</label>
+          <input type="text" id="f-venue" placeholder="e.g. Nairobi, Karen area">
+        </div>
+        <div class="form-group">
+          <label>Venue Type</label>
+          <select id="f-venue-type">
+            <option value="">Select...</option>
+            <option>Private compound / home</option>
+            <option>Hotel / banquet hall</option>
+            <option>Church / place of worship</option>
+            <option>Open field / grounds</option>
+            <option>Restaurant / club</option>
+            <option>Not yet decided</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Special Requirements or Event Description</label>
+          <textarea id="f-notes" placeholder="Describe your vision, any special requests, theme, or anything we should know..."></textarea>
+        </div>
+      </div>
+      <div class="form-submit">
+        <button class="btn-gold" onclick="submitBooking()">Submit Booking Request</button>
+        <div class="payment-note">
+          💳 A 30% deposit is required to confirm your booking
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== MARKETPLACE PAGE =================== -->
+<div id="page-marketplace" class="page">
+  <div class="section">
+    <div class="section-label">Service Marketplace</div>
+    <div class="section-title">Browse Event Providers</div>
+    <div class="section-sub">Connect with trusted caterers, photographers, entertainers, florists and more — all vetted and listed on Only Events.</div>
+
+    <div class="marketplace-header">
+      <div class="marketplace-filters">
+        <button class="filter-btn active" onclick="filterProviders(this,'all')">All</button>
+        <button class="filter-btn" onclick="filterProviders(this,'catering')">Catering</button>
+        <button class="filter-btn" onclick="filterProviders(this,'photography')">Photography</button>
+        <button class="filter-btn" onclick="filterProviders(this,'entertainment')">Entertainment</button>
+        <button class="filter-btn" onclick="filterProviders(this,'decor')">Décor</button>
+        <button class="filter-btn" onclick="filterProviders(this,'tent')">Tents & Furniture</button>
+      </div>
+      <button class="btn-gold" onclick="toggleListForm()">+ List Your Business</button>
+    </div>
+
+    <div class="providers-grid" id="providers-grid">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- List Provider Form -->
+    <div class="list-provider-form" id="list-form" style="display:none;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1rem;">List Your Business on Only Events</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Business Name</label>
+          <input type="text" id="p-name" placeholder="Acme Caterers Ltd">
+        </div>
+        <div class="form-group">
+          <label>Service Category</label>
+          <select id="p-category">
+            <option>Catering</option>
+            <option>Photography & Videography</option>
+            <option>Entertainment & DJ</option>
+            <option>Décor & Florals</option>
+            <option>Tents & Furniture</option>
+            <option>Sound & Lighting</option>
+            <option>Transport</option>
+            <option>Security</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Contact Person</label>
+          <input type="text" id="p-contact" placeholder="John Kamau">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="p-phone" placeholder="+254 700 000 000">
+        </div>
+        <div class="form-group full">
+          <label>Business Description</label>
+          <textarea id="p-desc" placeholder="Tell potential clients what makes you special, your experience, specialties..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Starting Price (KES)</label>
+          <input type="number" id="p-price" placeholder="15000">
+        </div>
+        <div class="form-group">
+          <label>Service Area</label>
+          <input type="text" id="p-area" placeholder="Nairobi, Kiambu, Machakos">
+        </div>
+      </div>
+      <div style="margin-top:1.5rem;display:flex;gap:1rem;">
+        <button class="btn-gold" onclick="submitProvider()">Submit Listing</button>
+        <button class="btn-outline" onclick="toggleListForm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== ADMIN PAGE =================== -->
+<div id="page-admin" class="page">
+  <div class="admin-wrapper">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Overview</div>
+        <div class="sidebar-item active" onclick="showAdminPanel('dashboard', this)">
+          <span class="sidebar-icon">📊</span> Dashboard
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Events</div>
+        <div class="sidebar-item" onclick="showAdminPanel('events', this)">
+          <span class="sidebar-icon">📅</span> Active Events
+        </div>
+        <div class="sidebar-item" onclick="showAdminPanel('bookings', this)">
+          <span class="sidebar-icon">📋</span> Bookings
+        </div>
+        <div class="sidebar-item" onclick="showAdminPanel('payments', this)">
+          <span class="sidebar-icon">💰</span> Payments
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Logistics</div>
+        <div class="sidebar-item" onclick="showAdminPanel('equipment', this)">
+          <span class="sidebar-icon">🎪</span> Equipment
+        </div>
+        <div class="sidebar-item" onclick="showAdminPanel('trucks', this)">
+          <span class="sidebar-icon">🚛</span> Fleet / Trucks
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Marketplace</div>
+        <div class="sidebar-item" onclick="showAdminPanel('providers', this)">
+          <span class="sidebar-icon">🏪</span> Providers
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+
+      <!-- DASHBOARD -->
+      <div class="admin-panel active" id="panel-dashboard">
+        <div class="section-head">
+          <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:0.25rem;">Welcome back 👋</div>
+          <div style="font-size:0.875rem;color:var(--muted);">Here's what's happening at Only Events today.</div>
+        </div>
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="dash-card-label">Active Events</div>
+            <div class="dash-card-value">7</div>
+            <div class="dash-card-delta delta-up">↑ 2 this week</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-label">Pending Bookings</div>
+            <div class="dash-card-value">14</div>
+            <div class="dash-card-delta delta-up">↑ 5 new</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-label">Revenue (MTD)</div>
+            <div class="dash-card-value">1.2M</div>
+            <div class="dash-card-delta delta-up">↑ 18% vs last month</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-label">Equipment Out</div>
+            <div class="dash-card-value">68%</div>
+            <div class="dash-card-delta delta-down">3 items in maintenance</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-label">Trucks Deployed</div>
+            <div class="dash-card-value">5/8</div>
+            <div class="dash-card-delta">3 available</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-label">Provider Listings</div>
+            <div class="dash-card-value">34</div>
+            <div class="dash-card-delta delta-up">↑ 6 pending review</div>
+          </div>
+        </div>
+
+        <div class="table-section">
+          <div class="table-header">
+            <div class="table-title">Upcoming Events This Week</div>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Event</th><th>Type</th><th>Date</th><th>Venue</th><th>Package</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Kamau & Wanjiku Wedding</td><td>Wedding</td><td>21 Jun 2026</td><td>Nairobi, Karen</td><td style="color:var(--gold)">Gold</td><td><span class="status-badge status-active">Active</span></td></tr>
+              <tr><td>Waweru Ruracio</td><td>Ruracio</td><td>22 Jun 2026</td><td>Thika, Kiambu</td><td style="color:var(--silver)">Silver</td><td><span class="status-badge status-active">Active</span></td></tr>
+              <tr><td>TechKe Annual Summit</td><td>Corporate</td><td>24 Jun 2026</td><td>KICC, Nairobi</td><td style="color:var(--silver)">Silver</td><td><span class="status-badge status-pending">Pending</span></td></tr>
+              <tr><td>Mama Njeri Memorial</td><td>Funeral</td><td>25 Jun 2026</td><td>Nyeri</td><td style="color:var(--bronze)">Bronze</td><td><span class="status-badge status-active">Active</span></td></tr>
+              <tr><td>Baby Shower – Akinyi</td><td>Baby Shower</td><td>28 Jun 2026</td><td>Westlands</td><td style="color:var(--bronze)">Bronze</td><td><span class="status-badge status-pending">Pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ACTIVE EVENTS -->
+      <div class="admin-panel" id="panel-events">
+        <div class="section-head">
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.25rem;">Active Events</div>
+        </div>
+        <div class="table-section">
+          <div class="table-header">
+            <div class="table-title">All Events</div>
+            <button class="table-add-btn" onclick="showToast('Feature coming soon — use Booking form for now')">+ New Event</button>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Client</th><th>Event Type</th><th>Date</th><th>Location</th><th>Package</th><th>Guests</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="events-table">
+              <tr><td>Kamau & Wanjiku</td><td>Wedding</td><td>21 Jun 2026</td><td>Karen, Nairobi</td><td style="color:var(--gold)">Gold</td><td>350</td><td><span class="status-badge status-active">Active</span></td><td><button class="action-btn">View</button></td></tr>
+              <tr><td>Waweru Family</td><td>Ruracio</td><td>22 Jun 2026</td><td>Thika</td><td style="color:var(--silver)">Silver</td><td>80</td><td><span class="status-badge status-active">Active</span></td><td><button class="action-btn">View</button></td></tr>
+              <tr><td>TechKe Ltd</td><td>Corporate</td><td>24 Jun 2026</td><td>KICC</td><td style="color:var(--silver)">Silver</td><td>200</td><td><span class="status-badge status-pending">Pending</span></td><td><button class="action-btn">View</button></td></tr>
+              <tr><td>Njeri Estate</td><td>Funeral</td><td>25 Jun 2026</td><td>Nyeri Town</td><td style="color:var(--bronze)">Bronze</td><td>120</td><td><span class="status-badge status-active">Active</span></td><td><button class="action-btn">View</button></td></tr>
+              <tr><td>Akinyi Odhiambo</td><td>Baby Shower</td><td>28 Jun 2026</td><td>Westlands</td><td style="color:var(--bronze)">Bronze</td><td>45</td><td><span class="status-badge status-pending">Pending</span></td><td><button class="action-btn">View</button></td></tr>
+              <tr><td>Mutua & Ndunge</td><td>Wedding</td><td>5 Jul 2026</td><td>Machakos</td><td style="color:var(--gold)">Gold</td><td>500</td><td><span class="status-badge status-pending">Pending</span></td><td><button class="action-btn">View</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BOOKINGS -->
+      <div class="admin-panel" id="panel-bookings">
+        <div class="section-head">
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.25rem;">Booking Requests</div>
+        </div>
+        <div class="table-section">
+          <div class="table-header">
+            <div class="table-title">Incoming Requests</div>
+          </div>
+          <table>
+            <thead><tr><th>Name</th><th>Phone</th><th>Event Type</th><th>Date</th><th>Package</th><th>Submitted</th><th>Action</th></tr></thead>
+            <tbody id="bookings-table">
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">No pending bookings yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PAYMENTS -->
+      <div class="admin-panel" id="panel-payments">
+        <div class="section-head">
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.25rem;">Payments & Invoices</div>
+        </div>
+        <div class="table-section">
+          <div class="table-header">
+            <div class="table-title">Recent Transactions</div>
+          </div>
+          <table>
+            <thead><tr><th>Client</th><th>Package</th><th>Amount (KES)</th><th>Type</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Kamau & Wanjiku</td><td style="color:var(--gold)">Gold</td><td>84,000</td><td>Deposit 30%</td><td>M-Pesa</td><td>10 Jun 2026</td><td><span class="status-badge status-completed">Paid</span></td></tr>
+              <tr><td>Waweru Family</td><td style="color:var(--silver)">Silver</td><td>36,000</td><td>Deposit 30%</td><td>Bank Transfer</td><td>14 Jun 2026</td><td><span class="status-badge status-completed">Paid</span></td></tr>
+              <tr><td>TechKe Ltd</td><td style="color:var(--silver)">Silver</td><td>120,000</td><td>Full Payment</td><td>Bank Transfer</td><td>18 Jun 2026</td><td><span class="status-badge status-pending">Pending</span></td></tr>
+              <tr><td>Njeri Estate</td><td style="color:var(--bronze)">Bronze</td><td>15,000</td><td>Deposit 30%</td><td>M-Pesa</td><td>17 Jun 2026</td><td><span class="status-badge status-completed">Paid</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- EQUIPMENT -->
+      <div class="admin-panel" id="panel-equipment">
+        <div class="section-head">
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.25rem;">Equipment Inventory</div>
+          <div style="font-size:0.875rem;color:var(--muted);">Track all your gear, allocate to events, and monitor status.</div>
+        </div>
+        <div class="equipment-grid" id="equipment-grid">
+          <!-- Populated by JS -->
+        </div>
+        <div style="margin-top:2rem;">
+          <div class="table-section">
+            <div class="table-header">
+              <div class="table-title">Equipment Allocations</div>
+              <button class="table-add-btn" onclick="showToast('Allocation saved!')">Allocate Equipment</button>
+            </div>
+            <table>
+              <thead><tr><th>Equipment</th><th>Quantity</th><th>Assigned To</th><th>Event Date</th><th>Return Date</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Marquee Tent (20x30)</td><td>1</td><td>Kamau & Wanjiku Wedding</td><td>21 Jun</td><td>22 Jun</td><td><span class="status-badge status-deployed">Deployed</span></td></tr>
+                <tr><td>Round Tables</td><td>40</td><td>Kamau & Wanjiku Wedding</td><td>21 Jun</td><td>22 Jun</td><td><span class="status-badge status-deployed">Deployed</span></td></tr>
+                <tr><td>PA System (2000W)</td><td>1</td><td>TechKe Summit</td><td>24 Jun</td><td>24 Jun</td><td><span class="status-badge status-available">Reserved</span></td></tr>
+                <tr><td>Banquet Chairs</td><td>80</td><td>Waweru Ruracio</td><td>22 Jun</td><td>23 Jun</td><td><span class="status-badge status-deployed">Deployed</span></td></tr>
+                <tr><td>Generator (50KVA)</td><td>1</td><td>–</td><td>–</td><td>–</td><td><span class="status-badge status-maintenance">Maintenance</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRUCKS -->
+      <div class="admin-panel" id="panel-trucks">
+        <div class="section-head">
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.25rem;">Fleet Management</div>
+          <div style="font-size:0.875rem;color:var(--muted);">Track your trucks and assign them to events in real time.</div>
+        </div>
+        <div class="truck-grid" id="trucks-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- PROVIDERS ADMIN -->
+      <div class="admin-panel" id="panel-providers">
+        <div class="section-head">
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.25rem;">Provider Listings</div>
+        </div>
+        <div class="table-section">
+          <div class="table-header">
+            <div class="table-title">Registered Providers</div>
+          </div>
+          <table>
+            <thead><tr><th>Business</th><th>Category</th><th>Contact</th><th>Area</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="admin-providers-table">
+              <tr><td>Mama's Kitchen</td><td>Catering</td><td>+254 712 000 001</td><td>Nairobi</td><td><span class="status-badge status-active">Approved</span></td><td><button class="action-btn danger">Remove</button></td></tr>
+              <tr><td>Snap & Story</td><td>Photography</td><td>+254 723 000 002</td><td>Nairobi, Kiambu</td><td><span class="status-badge status-active">Approved</span></td><td><button class="action-btn danger">Remove</button></td></tr>
+              <tr><td>DJ Karura</td><td>Entertainment</td><td>+254 734 000 003</td><td>Nairobi</td><td><span class="status-badge status-pending">Pending</span></td><td><button class="action-btn" onclick="approveProvider(this)">Approve</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- admin-main -->
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="payment-modal">
+  <div class="modal">
+    <h3>Confirm Your Booking</h3>
+    <p>A 30% deposit is required to secure your event date. The remaining balance is due 7 days before the event.</p>
+    <div class="payment-breakdown" id="payment-breakdown"></div>
+    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.75rem;font-weight:500;">Select Payment Method</div>
+    <div class="payment-methods">
+      <div class="pay-method selected" data-method="mpesa" onclick="selectPayMethod(this)">📱 M-Pesa (KES)</div>
+      <div class="pay-method" data-method="visa" onclick="selectPayMethod(this)">💳 Visa / Credit Card (KES/USD)</div>
+      <div class="pay-method" data-method="paypal" onclick="selectPayMethod(this)">🅿️ PayPal (USD)</div>
+    </div>
+    <div id="payment-details-container" style="margin-top: 15px; margin-bottom: 15px; font-size: 0.9rem;">
+      <p id="payment-prompt-text" style="color: var(--gold); font-weight: 500;">Enter your M-Pesa number to receive a payment prompt.</p>
+      <input type="text" id="payment-input" class="input-field" placeholder="e.g. 0712345678" style="width: 100%; margin-top: 5px;">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closePayment()">Cancel</button>
+      <button class="btn-pay" id="btn-confirm-pay" onclick="confirmPayment()">Pay Deposit Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- GPS TRACKER MODAL -->
+<div class="modal-overlay" id="gps-modal">
+  <div class="modal" style="text-align: center;">
+    <h3>📍 Live Delivery Tracker</h3>
+    <p style="font-size: 0.9rem; margin-bottom: 15px;">Tracking vendor delivery in real-time. GPS is ENFORCED for security and transparency.</p>
+    
+    <div id="gps-map" style="width: 100%; height: 300px; border-radius: 8px; margin-bottom: 15px; border: 2px solid var(--gold);"></div>
+
+    <div style="display: flex; justify-content: space-between; text-align: left; background: #f9f9f9; padding: 10px; border-radius: 5px; font-size: 0.85rem;">
+      <div>
+        <strong>Vendor (Driver):</strong><br>
+        <span id="vendor-coords">Acquiring signal...</span>
+      </div>
+      <div style="text-align: right;">
+        <strong>Customer (You):</strong><br>
+        <span id="customer-coords">Acquiring signal...</span>
+      </div>
+    </div>
+    
+    <div style="margin-top: 15px; font-weight: bold; color: var(--gold);" id="eta-display">ETA: Calculating...</div>
+
+    <div class="modal-btns" style="margin-top: 15px;">
+      <button class="btn-cancel" onclick="document.getElementById('gps-modal').classList.remove('open'); clearInterval(window.gpsInterval);">Close Tracker</button>
+    </div>
+    
+    <div style="margin-top: 15px; font-size: 0.8rem; color: var(--muted); border-top: 1px solid #ddd; padding-top: 10px;">
+      Having delivery inconveniences? <a href="tel:+254712345678" style="color: var(--primary); text-decoration: none; font-weight: 600;">📞 Call Support</a>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING SUPPORT BUTTON -->
+<div class="fab-support" onclick="toggleSupportMenu()">
+  💬 Help
+</div>
+<div class="support-menu" id="support-menu">
+  <div style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Customer Care</div>
+  <a href="tel:+254712345678" class="support-link">📞 Call Us: +254 712 345 678</a>
+  <a href="sms:+254712345678" class="support-link">📱 Text Us</a>
+  <a href="https://wa.me/254712345678" class="support-link" target="_blank">🟢 WhatsApp Us</a>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- STATE ----
+let selectedEventType = '';
+let currentPayment = { tier: '', total: 0 };
+let bookings = [];
+let providers = [
+  { name: "Mama's Kitchen", category: 'catering', desc: 'Award-winning caterers specialising in Kenyan, continental, and buffet menus for all event sizes.', price: 'From KES 1,500/head', area: 'Nairobi, Kiambu', rating: '4.9 ★', phone: '+254 712 000 001', icon: '🍲', bg: '#1a2e1a' },
+  { name: 'Snap & Story', category: 'photography', desc: 'Cinematic wedding and event photography. Full-day coverage, drone shots, and same-week gallery delivery.', price: 'From KES 25,000/event', area: 'Nairobi, Kiambu', rating: '4.8 ★', phone: '+254 723 000 002', icon: '📸', bg: '#1a1a2e' },
+  { name: 'Bloom & Drape', category: 'decor', desc: 'Luxury floral arrangements, table centrepieces, venue draping, and themed décor packages.', price: 'From KES 30,000', area: 'Nairobi', rating: '4.7 ★', phone: '+254 745 000 004', icon: '🌸', bg: '#2e1a2a' },
+  { name: 'DJ Karura', category: 'entertainment', desc: 'Professional DJ with 10+ years experience. Weddings, corporates, parties. Custom playlists available.', price: 'From KES 15,000/night', area: 'Nairobi', rating: '4.6 ★', phone: '+254 734 000 003', icon: '🎧', bg: '#1a1e2e' },
+  { name: 'Tented Affairs', category: 'tent', desc: 'Marquee tents, party tents, chairs, tables, and linen for events of any size. Setup & teardown included.', price: 'From KES 20,000', area: 'Nairobi, Kiambu, Machakos', rating: '4.8 ★', phone: '+254 756 000 005', icon: '⛺', bg: '#2a2e1a' },
+  { name: 'Luminar Lights', category: 'entertainment', desc: 'Professional stage lighting, LED walls, uplighting, and effect lighting for weddings and concerts.', price: 'From KES 18,000', area: 'Nairobi', rating: '4.5 ★', phone: '+254 767 000 006', icon: '💡', bg: '#2e251a' },
+];
+let trucks = [
+  { id: 'KDA 001X', name: 'Truck 1 – Isuzu FRR', icon: '🚛', status: 'Deployed', assignment: 'Kamau Wedding', driver: 'Peter Mwangi', location: 'Karen, Nairobi' },
+  { id: 'KBX 212K', name: 'Truck 2 – Mitsubishi Fuso', icon: '🚚', status: 'Deployed', assignment: 'Waweru Ruracio', driver: 'James Otieno', location: 'Thika Road' },
+  { id: 'KDD 445Z', name: 'Truck 3 – Isuzu NPR', icon: '🚛', status: 'Available', assignment: '—', driver: 'Unassigned', location: 'Depot – Thika Rd' },
+  { id: 'KBY 067T', name: 'Truck 4 – Tata LPT', icon: '🚚', status: 'Deployed', assignment: 'Njeri Memorial', driver: 'Samuel Kariuki', location: 'Nyeri Town' },
+  { id: 'KCA 891M', name: 'Truck 5 – Isuzu FVZ', icon: '🚛', status: 'Available', assignment: '—', driver: 'Unassigned', location: 'Depot – Thika Rd' },
+  { id: 'KDA 334P', name: 'Truck 6 – Mitsubishi Canter', icon: '🚐', status: 'Maintenance', assignment: '—', driver: '—', location: 'Garage – Eastlands' },
+  { id: 'KCX 778Q', name: 'Truck 7 – Isuzu EXZ', icon: '🚛', status: 'Deployed', assignment: 'TechKe Summit', driver: 'David Njoroge', location: 'Westlands' },
+  { id: 'KDB 120W', name: 'Truck 8 – Tata Ultra', icon: '🚚', status: 'Available', assignment: '—', driver: 'Unassigned', location: 'Depot – Thika Rd' },
+];
+let equipment = [
+  { name: 'Marquee Tents', icon: '⛺', total: 8, deployed: 5, unit: 'units' },
+  { name: 'PA Systems', icon: '🔊', total: 6, deployed: 2, unit: 'units' },
+  { name: 'Generators', icon: '⚡', total: 5, deployed: 2, unit: 'units' },
+  { name: 'Banquet Chairs', icon: '🪑', total: 1200, deployed: 650, unit: 'pcs' },
+  { name: 'Round Tables', icon: '🪞', total: 120, deployed: 80, unit: 'pcs' },
+  { name: 'LED Lights', icon: '💡', total: 200, deployed: 90, unit: 'pcs' },
+  { name: 'Projectors', icon: '📽️', total: 4, deployed: 1, unit: 'units' },
+  { name: 'Canopies', icon: '🌂', total: 30, deployed: 12, unit: 'units' },
+];
+
+// ---- NAVIGATION ----
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  window.scrollTo(0, 0);
+  if (page === 'marketplace') renderProviders('all');
+  if (page === 'admin') { renderTrucks(); renderEquipment(); }
+}
+
+function selectEventType(el, type) {
+  document.querySelectorAll('.event-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedEventType = type;
+  setTimeout(() => {
+    showPage('book');
+    const sel = document.getElementById('f-type');
+    for (let o of sel.options) {
+      if (o.text.startsWith(type)) { o.selected = true; break; }
+    }
+  }, 200);
+}
+
+// ---- ADMIN PANELS ----
+function showAdminPanel(name, el) {
+  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ---- RENDER TRUCKS ----
+function renderTrucks() {
+  const grid = document.getElementById('trucks-grid');
+  grid.innerHTML = trucks.map(t => {
+    const sc = t.status === 'Available' ? 'status-available' : t.status === 'Maintenance' ? 'status-maintenance' : 'status-deployed';
+    return `<div class="truck-card">
+      <div class="truck-top">
+        <span class="truck-icon">${t.icon}</span>
+        <div>
+          <div class="truck-name">${t.name}</div>
+          <div class="truck-plate">${t.id}</div>
+        </div>
+      </div>
+      <span class="status-badge ${sc}">${t.status}</span>
+      <div class="truck-info">
+        ${t.assignment !== '—' ? `<div>📅 <b>Event:</b> ${t.assignment}</div>` : ''}
+        <div>👤 Driver: ${t.driver}</div>
+        <div>📍 Location: ${t.location}</div>
+      </div>
+      ${t.status === 'Available' ? `<button class="truck-assign-btn" onclick="assignTruck('${t.id}')">Assign to Event</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function assignTruck(id) {
+  const event = prompt('Assign truck ' + id + ' to which event?');
+  if (event) {
+    const truck = trucks.find(t => t.id === id);
+    if (truck) { truck.status = 'Deployed'; truck.assignment = event; renderTrucks(); showToast('Truck ' + id + ' assigned to ' + event); }
+  }
+}
+
+// ---- RENDER EQUIPMENT ----
+function renderEquipment() {
+  const grid = document.getElementById('equipment-grid');
+  grid.innerHTML = equipment.map(e => {
+    const pct = Math.round((e.deployed / e.total) * 100);
+    return `<div class="equip-card">
+      <div class="equip-icon">${e.icon}</div>
+      <div class="equip-name">${e.name}</div>
+      <div class="equip-count">${e.deployed} / ${e.total} ${e.unit} deployed</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="equip-location">${pct}% in use</div>
+    </div>`;
+  }).join('');
+}
+
+// ---- PROVIDERS ----
+function renderProviders(cat) {
+  const grid = document.getElementById('providers-grid');
+  const filtered = cat === 'all' ? providers : providers.filter(p => p.category === cat);
+  grid.innerHTML = filtered.map(p => `
+    <div class="provider-card">
+      <div class="provider-banner" style="background:${p.bg}">${p.icon}</div>
+      <div class="provider-body">
+        <div class="provider-name">${p.name}</div>
+        <div class="provider-type">${p.category.charAt(0).toUpperCase() + p.category.slice(1)}</div>
+        <div class="provider-desc">${p.desc}</div>
+        <div class="provider-meta">
+          <span>📍 ${p.area}</span>
+          <span>⭐ ${p.rating}</span>
+          <span>${p.price}</span>
+        </div>
+        <button class="provider-contact" onclick="showToast('Contacting ${p.name}: ${p.phone}')">Contact Provider</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterProviders(btn, cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProviders(cat);
+}
+
+function toggleListForm() {
+  const f = document.getElementById('list-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function submitProvider() {
+  const name = document.getElementById('p-name').value;
+  const cat = document.getElementById('p-category').value;
+  const phone = document.getElementById('p-phone').value;
+  const desc = document.getElementById('p-desc').value;
+  const area = document.getElementById('p-area').value;
+  if (!name || !phone) { showToast('Please fill in at least business name and phone.'); return; }
+  providers.push({
+    name, category: cat.toLowerCase().split(' ')[0], desc: desc || 'Professional service provider.',
+    price: 'Contact for pricing', area: area || 'Nairobi', rating: 'New', phone, icon: '🏪', bg: '#1a1a2e'
+  });
+  toggleListForm();
+  renderProviders('all');
+  document.querySelectorAll('.filter-btn').forEach((b,i) => { if(i===0) b.classList.add('active'); else b.classList.remove('active'); });
+  showToast('Your listing has been submitted for review! We\'ll contact you within 48 hours.');
+}
+
+// ---- BOOKING ----
+function submitBooking() {
+  const name = document.getElementById('f-name').value;
+  const phone = document.getElementById('f-phone').value;
+  const email = document.getElementById('f-email').value;
+  const type = document.getElementById('f-type').value;
+  const pkg = document.getElementById('f-package').value;
+  const date = document.getElementById('f-date').value;
+  const guests = document.getElementById('f-guests').value;
+  if (!name || !phone || !type || !pkg || !date) {
+    showToast('Please fill in all required fields.'); return;
+  }
+  const booking = { name, phone, email, type, pkg, date, guests, submitted: new Date().toLocaleDateString() };
+  bookings.push(booking);
+  const tbody = document.getElementById('bookings-table');
+  if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${name}</td><td>${phone}</td><td>${type}</td><td>${date}</td><td>${pkg}</td><td>${booking.submitted}</td><td><button class="action-btn" onclick="approveProvider(this)">Review</button></td>`;
+  tbody.appendChild(row);
+
+  const priceMap = { Bronze: 50000, Silver: 120000, Gold: 280000, Custom: 0 };
+  const price = priceMap[pkg] || 0;
+  if (price > 0) {
+    openPayment(pkg, price);
+  } else {
+    showToast('Booking received! We\'ll contact you with a custom quote within 24 hours.');
+  }
+}
+
+// ---- PAYMENT ----
+function openPayment(tier, total) {
+  currentPayment = { tier, total };
+  const deposit = Math.round(total * 0.3);
+  const balance = total - deposit;
+  document.getElementById('payment-breakdown').innerHTML = `
+    <div class="pay-row"><span class="pay-label">${tier} Package</span><span>KES ${total.toLocaleString()}</span></div>
+    <div class="pay-row"><span class="pay-label">Deposit (30%)</span><span>KES ${deposit.toLocaleString()}</span></div>
+    <div class="pay-row"><span class="pay-label">Balance (due 7 days before event)</span><span>KES ${balance.toLocaleString()}</span></div>
+    <div class="pay-row"><span class="pay-label">Due Today</span><span>KES ${deposit.toLocaleString()}</span></div>
+  `;
+  document.getElementById('payment-modal').classList.add('open');
+}
+
+function closePayment() {
+  document.getElementById('payment-modal').classList.remove('open');
+}
+
+function selectPayMethod(el) {
+  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+  
+  const method = el.getAttribute('data-method');
+  const promptText = document.getElementById('payment-prompt-text');
+  const paymentInput = document.getElementById('payment-input');
+  const confirmBtn = document.getElementById('btn-confirm-pay');
+  
+  paymentInput.style.display = 'block';
+  paymentInput.value = '';
+  
+  if (method === 'mpesa') {
+    promptText.textContent = 'Enter your M-Pesa number to receive a payment prompt.';
+    paymentInput.placeholder = 'e.g. 0712345678';
+    confirmBtn.textContent = 'Pay Deposit Now';
+  } else if (method === 'visa') {
+    promptText.textContent = 'Enter your Card Number to proceed securely via Stripe.';
+    paymentInput.placeholder = 'XXXX XXXX XXXX XXXX';
+    confirmBtn.textContent = 'Proceed to Secure Checkout';
+  } else if (method === 'paypal') {
+    promptText.textContent = 'You will be redirected to PayPal (USD) to complete your transaction.';
+    paymentInput.style.display = 'none';
+    confirmBtn.textContent = 'Checkout with PayPal';
+  }
+}
+
+function confirmPayment() {
+  const selectedMethodEl = document.querySelector('.pay-method.selected');
+  const method = selectedMethodEl ? selectedMethodEl.getAttribute('data-method') : 'mpesa';
+  
+  // ENFORCE GPS TRACKING ON CUSTOMER BEFORE PROCEEDING
+  if (!navigator.geolocation) {
+    alert("Your device does not support GPS tracking. GPS is required to complete this booking.");
+    return;
+  }
+  
+  showToast('📍 Requesting mandatory GPS location for delivery tracking...');
+  
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      // GPS granted
+      window.customerLat = position.coords.latitude;
+      window.customerLon = position.coords.longitude;
+      
+      closePayment();
+      
+      if (method === 'mpesa') {
+        showToast('✅ Payment initiated! Check your phone for the M-Pesa prompt. Your booking is confirmed.');
+      } else if (method === 'visa') {
+        showToast('🔄 Redirecting to secure Visa/Mastercard checkout gateway...');
+      } else if (method === 'paypal') {
+        showToast('🔄 Redirecting to PayPal to complete your transaction securely...');
+      }
+
+      // Automatically open tracking after payment
+      setTimeout(openGPSTracker, 2500);
+    },
+    (error) => {
+      // GPS denied or failed
+      alert("⚠️ GPS Access Denied. You MUST enable GPS location tracking to complete this booking and allow vendors to deliver.");
+    }
+  );
+}
+
+// ---- GPS TRACKING ENFORCEMENT & SIMULATION ----
+let trackingMap = null;
+let vendorMarker = null;
+let customerMarker = null;
+
+function openGPSTracker() {
+  document.getElementById('gps-modal').classList.add('open');
+  
+  const custCoords = document.getElementById('customer-coords');
+  const vendCoords = document.getElementById('vendor-coords');
+  const etaDisplay = document.getElementById('eta-display');
+  
+  // Default coordinates (Nairobi) if customer GPS failed or simulated
+  const cLat = window.customerLat || -1.2921;
+  const cLon = window.customerLon || 36.8219;
+  
+  if (window.customerLat) {
+    custCoords.textContent = `${cLat.toFixed(4)}, ${cLon.toFixed(4)}`;
+  } else {
+    custCoords.textContent = 'Location enforced & saved.';
+  }
+
+  // Initialize Leaflet Map if it hasn't been initialized yet
+  if (!trackingMap) {
+    trackingMap = L.map('gps-map').setView([cLat, cLon], 13);
+    
+    // Use OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(trackingMap);
+    
+    // Add customer marker (Blue)
+    customerMarker = L.marker([cLat, cLon]).addTo(trackingMap)
+      .bindPopup('<b>Customer Location</b><br>Delivery Destination').openPopup();
+      
+    // Add vendor initial marker slightly away (Red)
+    const customIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+    
+    vendorMarker = L.marker([cLat - 0.05, cLon - 0.05], {icon: customIcon}).addTo(trackingMap)
+      .bindPopup('<b>Vendor Delivery</b><br>En Route');
+  } else {
+    // If map already exists, just recenter and fix display bug for hidden modals
+    setTimeout(() => { trackingMap.invalidateSize(); }, 300);
+  }
+
+  // Simulate vendor moving towards customer
+  let distance = 5.4; // km
+  let vLat = cLat - 0.05;
+  let vLon = cLon - 0.05;
+  
+  window.gpsInterval = setInterval(() => {
+    distance -= 0.12;
+    if (distance < 0) distance = 0;
+    
+    // Move vendor closer to customer
+    vLat += (cLat - vLat) * 0.1;
+    vLon += (cLon - vLon) * 0.1;
+    
+    vendorMarker.setLatLng([vLat, vLon]);
+    vendCoords.textContent = `${vLat.toFixed(4)}, ${vLon.toFixed(4)}`;
+    
+    // Fit bounds to show both markers
+    const group = new L.featureGroup([customerMarker, vendorMarker]);
+    trackingMap.fitBounds(group.getBounds().pad(0.1));
+    
+    if (distance <= 0.1) {
+      etaDisplay.textContent = 'Vendor has arrived!';
+      etaDisplay.style.color = 'green';
+      vendorMarker.bindPopup('<b>Vendor Arrived!</b>').openPopup();
+      clearInterval(window.gpsInterval);
+    } else {
+      etaDisplay.textContent = `ETA: ${Math.ceil(distance * 3)} mins (${distance.toFixed(1)} km away)`;
+    }
+  }, 2000);
+}
+
+// Add Tracker button to Admin panel (simulate admin viewing the tracker)
+function trackDelivery(id) {
+  showToast(`Enforcing vendor GPS for delivery ID: ${id}...`);
+  setTimeout(openGPSTracker, 1000);
+}
+
+// ---- SUPPORT MENU ----
+function toggleSupportMenu() {
+  const menu = document.getElementById('support-menu');
+  menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+// ---- MISC ----
+function assignTruck(id) {
+  const btn = event.target;
+  const card = btn.closest('.truck-card');
+  const badge = card.querySelector('.status-badge');
+  badge.className = 'status-badge status-active';
+  badge.textContent = 'En Route';
+  btn.textContent = 'Track Delivery';
+  btn.setAttribute('onclick', `trackDelivery('${id}')`);
+  btn.style.background = 'var(--gold)';
+  btn.style.color = 'var(--dark)';
+  
+  showToast('🚚 Truck assigned! GPS tracking mandated and activated for delivery.');
+}
+
+function approveProvider(btn) {
+  const row = btn.closest('tr');
+  row.querySelector('.status-badge').className = 'status-badge status-active';
+  row.querySelector('.status-badge').textContent = 'Approved';
+  btn.textContent = 'Remove';
+  btn.classList.add('danger');
+  showToast('Provider approved and now visible on marketplace.');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3800);
+}
+
+// ---- INIT ----
+renderProviders('all');
+renderTrucks();
+renderEquipment();
+</script>
+</body>
+</html>
