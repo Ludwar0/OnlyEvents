@@ -11,52 +11,6 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <style>
     #map { height: 400px; width: 100%; border-radius: 8px; margin-top: 20px; }
-    
-    .fab-support {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--gold);
-      color: var(--dark);
-      padding: 12px 20px;
-      border-radius: 30px;
-      font-weight: bold;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      cursor: pointer;
-      z-index: 1000;
-      transition: transform 0.2s;
-    }
-    .fab-support:hover {
-      transform: scale(1.05);
-    }
-    .support-menu {
-      position: fixed;
-      bottom: 70px;
-      right: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      z-index: 999;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      min-width: 200px;
-    }
-    .support-link {
-      padding: 12px 15px;
-      text-decoration: none;
-      color: var(--dark);
-      border-bottom: 1px solid #f0f0f0;
-      font-size: 0.9rem;
-      transition: background 0.2s;
-    }
-    .support-link:hover {
-      background: #f9f9f9;
-      color: var(--primary);
-    }
-    .support-link:last-child {
-      border-bottom: none;
-    }
 </style>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -64,7 +18,7 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo" style="display: flex; align-items: center; gap: 10px;">
+  <div class="nav-logo" style="display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="showPage('home')">
     <img src="images/oe_logo.jpg" alt="Only Events Logo" style="height: 35px; width: 35px; border-radius: 8px; object-fit: cover;">
     Only <span>Events</span>
   </div>
@@ -333,6 +287,54 @@
   </div>
 </div>
 
+<!-- =================== CHECKOUT PAGE =================== -->
+<style>
+  @media (max-width: 768px) {
+    .checkout-container { grid-template-columns: 1fr !important; }
+  }
+</style>
+<div id="page-checkout" class="page">
+  <div class="section">
+    <div class="section-label">Checkout</div>
+    <div class="section-title">Secure Payment</div>
+    <div class="section-sub">Select your preferred payment method to complete your booking. A 30% deposit is required.</div>
+    
+    <div class="checkout-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 900px; margin: 0 auto; background: var(--surface); padding: 2rem; border-radius: var(--radius); border: 1px solid var(--border); text-align: left;">
+      
+      <div class="checkout-left">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1rem;">Order Summary</h3>
+        <div id="checkout-breakdown" style="background: #fcfcfc; padding: 1.5rem; border-radius: 8px; border: 1px solid #eee; margin-bottom: 2rem;">
+          <!-- Populated by JS -->
+        </div>
+        <button class="btn-outline" onclick="showPage('book')" style="width: 100%;">← Back to Booking</button>
+      </div>
+
+      <div class="checkout-right">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1rem;">Payment Method</h3>
+        <div class="payment-methods" style="display: flex; flex-direction: column; gap: 10px;">
+          <button class="pay-method selected" data-method="mpesa" onclick="selectPayMethod(this)" style="padding: 15px; border-radius: 8px; border: 2px solid var(--gold); background: #fff; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1rem; width: 100%; transition: 0.2s;">
+            <span style="font-size: 1.5rem;">📱</span> M-Pesa (Cash App)
+          </button>
+          <button class="pay-method" data-method="visa" onclick="selectPayMethod(this)" style="padding: 15px; border-radius: 8px; border: 1px solid var(--border); background: #fff; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1rem; width: 100%; transition: 0.2s;">
+            <span style="font-size: 1.5rem;">💳</span> Visa / Credit Card
+          </button>
+          <button class="pay-method" data-method="paypal" onclick="selectPayMethod(this)" style="padding: 15px; border-radius: 8px; border: 1px solid var(--border); background: #fff; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1rem; width: 100%; transition: 0.2s;">
+            <span style="font-size: 1.5rem;">🅿️</span> PayPal
+          </button>
+        </div>
+        
+        <div id="checkout-payment-details-container" style="margin-top: 20px; font-size: 0.95rem; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eaeaea;">
+          <p id="checkout-payment-prompt-text" style="color: var(--gold); font-weight: 600; margin-bottom: 10px;">Enter your M-Pesa number to receive a payment prompt.</p>
+          <input type="text" id="checkout-payment-input" class="input-field" placeholder="e.g. 0712345678" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; box-sizing: border-box;">
+        </div>
+
+        <button class="btn-gold" id="checkout-btn-confirm-pay" onclick="confirmPayment()" style="width: 100%; margin-top: 20px; padding: 15px; font-size: 1.1rem;">Pay Deposit Now</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- =================== MARKETPLACE PAGE =================== -->
 <div id="page-marketplace" class="page">
   <div class="section">
@@ -349,7 +351,10 @@
         <button class="filter-btn" onclick="filterProviders(this,'decor')">Décor</button>
         <button class="filter-btn" onclick="filterProviders(this,'tent')">Tents & Furniture</button>
       </div>
-      <button class="btn-gold" onclick="toggleListForm()">+ List Your Business</button>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-outline" onclick="recommendNearestVendor()" style="background: #fff; border: 1px solid var(--gold); color: var(--dark); padding: 0.5rem 1.25rem; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s;">📍 Nearest Vendor</button>
+        <button class="btn-gold" onclick="toggleListForm()">+ List Your Business</button>
+      </div>
     </div>
 
     <div class="providers-grid" id="providers-grid">
@@ -446,7 +451,6 @@
         </div>
       </div>
     </div>
-
     <!-- Main Content -->
     <div class="admin-main">
 
@@ -563,7 +567,7 @@
           </div>
           <table>
             <thead><tr><th>Client</th><th>Package</th><th>Amount (KES)</th><th>Type</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
-            <tbody>
+            <tbody id="payments-table">
               <tr><td>Kamau & Wanjiku</td><td style="color:var(--gold)">Gold</td><td>84,000</td><td>Deposit 30%</td><td>M-Pesa</td><td>10 Jun 2026</td><td><span class="status-badge status-completed">Paid</span></td></tr>
               <tr><td>Waweru Family</td><td style="color:var(--silver)">Silver</td><td>36,000</td><td>Deposit 30%</td><td>Bank Transfer</td><td>14 Jun 2026</td><td><span class="status-badge status-completed">Paid</span></td></tr>
               <tr><td>TechKe Ltd</td><td style="color:var(--silver)">Silver</td><td>120,000</td><td>Full Payment</td><td>Bank Transfer</td><td>18 Jun 2026</td><td><span class="status-badge status-pending">Pending</span></td></tr>
@@ -660,33 +664,49 @@
   </div>
 </div>
 
-<!-- GPS TRACKER MODAL -->
-<div class="modal-overlay" id="gps-modal">
-  <div class="modal" style="text-align: center;">
-    <h3>📍 Live Delivery Tracker</h3>
-    <p style="font-size: 0.9rem; margin-bottom: 15px;">Tracking vendor delivery in real-time. GPS is ENFORCED for security and transparency.</p>
-    
-    <div id="gps-map" style="width: 100%; height: 300px; border-radius: 8px; margin-bottom: 15px; border: 2px solid var(--gold);"></div>
-
-    <div style="display: flex; justify-content: space-between; text-align: left; background: #f9f9f9; padding: 10px; border-radius: 5px; font-size: 0.85rem;">
-      <div>
-        <strong>Vendor (Driver):</strong><br>
-        <span id="vendor-coords">Acquiring signal...</span>
+<!-- =================== TRACKING PAGE =================== -->
+<style>
+  .tracking-page { display: flex; flex-direction: column; height: 90vh; position: relative; background: #eaeaea; }
+  .tracking-map-container { flex: 1; width: 100%; min-height: 400px; z-index: 1; }
+  .tracking-bottom-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: #fff; padding: 25px; box-shadow: 0 -10px 30px rgba(0,0,0,0.15); border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; box-sizing: border-box; }
+  .tracking-driver-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .driver-profile { display: flex; align-items: center; gap: 15px; }
+  .driver-avatar { width: 55px; height: 55px; background: #f0f0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .driver-details h4 { margin: 0; font-size: 1.15rem; color: var(--dark); }
+  .driver-details p { margin: 3px 0 0; font-size: 0.9rem; color: var(--muted); }
+  .eta-pill { background: #e8f5e9; color: #2e7d32; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 1rem; display: inline-block; margin-top: 8px; }
+  .car-plate { background: #f4f4f4; border: 1px solid #ddd; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-family: monospace; letter-spacing: 1px; color: #333; }
+  .tracking-actions { display: flex; gap: 15px; }
+  .btn-call-driver { flex: 1; background: var(--dark); color: #fff; padding: 14px; border-radius: 10px; text-align: center; text-decoration: none; font-weight: bold; font-size: 1rem; transition: background 0.2s; }
+  .btn-call-driver:hover { background: #000; }
+  .btn-close-track { flex: 1; background: #ffebee; color: #c62828; padding: 14px; border-radius: 10px; text-align: center; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.2s; }
+  .btn-close-track:hover { background: #ffcdd2; }
+</style>
+<div id="page-tracking" class="page">
+  <div class="tracking-page">
+    <div id="gps-map" class="tracking-map-container"></div>
+    <div class="tracking-bottom-sheet">
+      <div style="text-align:center; width: 50px; height: 5px; background: #e0e0e0; border-radius: 3px; margin: 0 auto 20px;"></div>
+      
+      <div class="tracking-driver-info">
+        <div class="driver-profile">
+          <div class="driver-avatar">👨🏾‍✈️</div>
+          <div class="driver-details">
+            <h4 id="track-vendor-name">Vendor / Driver</h4>
+            <p>Isuzu FRR Delivery Truck</p>
+            <div style="font-size: 0.8rem; margin-top: 5px; color: var(--primary);">📍 <span id="vendor-coords">Locating...</span></div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div class="car-plate">KDA 001X</div>
+          <div class="eta-pill" id="eta-display">ETA: Calc...</div>
+        </div>
       </div>
-      <div style="text-align: right;">
-        <strong>Customer (You):</strong><br>
-        <span id="customer-coords">Acquiring signal...</span>
-      </div>
-    </div>
-    
-    <div style="margin-top: 15px; font-weight: bold; color: var(--gold);" id="eta-display">ETA: Calculating...</div>
 
-    <div class="modal-btns" style="margin-top: 15px;">
-      <button class="btn-cancel" onclick="document.getElementById('gps-modal').classList.remove('open'); clearInterval(window.gpsInterval);">Close Tracker</button>
-    </div>
-    
-    <div style="margin-top: 15px; font-size: 0.8rem; color: var(--muted); border-top: 1px solid #ddd; padding-top: 10px;">
-      Having delivery inconveniences? <a href="tel:+254712345678" style="color: var(--primary); text-decoration: none; font-weight: 600;">📞 Call Support</a>
+      <div class="tracking-actions">
+        <a href="tel:+254712345678" id="track-call-btn" class="btn-call-driver">📞 Call Support</a>
+        <div class="btn-close-track" onclick="if(window.gpsInterval) clearInterval(window.gpsInterval); showPage('home');">End Tracking</div>
+      </div>
     </div>
   </div>
 </div>
@@ -705,6 +725,7 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<script src="app.js"></script>
 <script>
 // ---- STATE ----
 let selectedEventType = '';
@@ -745,7 +766,7 @@ function showPage(page) {
   document.getElementById('page-' + page).classList.add('active');
   window.scrollTo(0, 0);
   if (page === 'marketplace') renderProviders('all');
-  if (page === 'admin') { renderTrucks(); renderEquipment(); }
+  if (page === 'admin') { renderTrucks(); renderEquipment(); renderBookings(); }
 }
 
 function selectEventType(el, type) {
@@ -769,28 +790,31 @@ function showAdminPanel(name, el) {
   el.classList.add('active');
 }
 
-// ---- RENDER TRUCKS ----
-function renderTrucks() {
-  const grid = document.getElementById('trucks-grid');
-  grid.innerHTML = trucks.map(t => {
-    const sc = t.status === 'Available' ? 'status-available' : t.status === 'Maintenance' ? 'status-maintenance' : 'status-deployed';
-    return `<div class="truck-card">
-      <div class="truck-top">
-        <span class="truck-icon">${t.icon}</span>
-        <div>
-          <div class="truck-name">${t.name}</div>
-          <div class="truck-plate">${t.id}</div>
+async function renderTrucks() {
+  try {
+    const res = await window.fetchTrucks();
+    const serverTrucks = res.data;
+    const grid = document.getElementById('trucks-grid');
+    if(serverTrucks.length === 0) return grid.innerHTML = '<p>No trucks found.</p>';
+    grid.innerHTML = serverTrucks.map(t => {
+      const sc = t.status === 'Available' ? 'status-available' : t.status === 'Maintenance' ? 'status-maintenance' : 'status-deployed';
+      return `<div class="truck-card">
+        <div class="truck-top">
+          <span class="truck-icon">🚚</span>
+          <div>
+            <div class="truck-name">${t.plateNumber} (Capacity: ${t.capacity})</div>
+            <div class="truck-plate">${t.id}</div>
+          </div>
         </div>
-      </div>
-      <span class="status-badge ${sc}">${t.status}</span>
-      <div class="truck-info">
-        ${t.assignment !== '—' ? `<div>📅 <b>Event:</b> ${t.assignment}</div>` : ''}
-        <div>👤 Driver: ${t.driver}</div>
-        <div>📍 Location: ${t.location}</div>
-      </div>
-      ${t.status === 'Available' ? `<button class="truck-assign-btn" onclick="assignTruck('${t.id}')">Assign to Event</button>` : ''}
-    </div>`;
-  }).join('');
+        <span class="status-badge ${sc}">${t.status}</span>
+        <div class="truck-info">
+          ${t.assignedEventId ? `<div>📅 <b>Event ID:</b> ${t.assignedEventId}</div>` : ''}
+          <div>👤 Driver: ${t.driverName} (${t.driverPhone})</div>
+        </div>
+        ${t.status === 'Available' ? `<button class="truck-assign-btn" onclick="assignTruck('${t.id}')">Assign to Event</button>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) { console.error(e); }
 }
 
 function assignTruck(id) {
@@ -801,41 +825,84 @@ function assignTruck(id) {
   }
 }
 
-// ---- RENDER EQUIPMENT ----
-function renderEquipment() {
-  const grid = document.getElementById('equipment-grid');
-  grid.innerHTML = equipment.map(e => {
-    const pct = Math.round((e.deployed / e.total) * 100);
-    return `<div class="equip-card">
-      <div class="equip-icon">${e.icon}</div>
-      <div class="equip-name">${e.name}</div>
-      <div class="equip-count">${e.deployed} / ${e.total} ${e.unit} deployed</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="equip-location">${pct}% in use</div>
-    </div>`;
-  }).join('');
+async function renderEquipment() {
+  try {
+    const res = await window.fetchEquipment();
+    const serverEquip = res.data;
+    const grid = document.getElementById('equipment-grid');
+    if(serverEquip.length === 0) return grid.innerHTML = '<p>No equipment found.</p>';
+    grid.innerHTML = serverEquip.map(e => {
+      const deployed = e.totalQuantity - e.availableQuantity;
+      const pct = Math.round((deployed / e.totalQuantity) * 100) || 0;
+      return `<div class="equip-card">
+        <div class="equip-icon">📦</div>
+        <div class="equip-name">${e.name} (${e.category})</div>
+        <div class="equip-count">${deployed} / ${e.totalQuantity} units deployed</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="equip-location">${pct}% in use | Status: ${e.status}</div>
+      </div>`;
+    }).join('');
+  } catch(e) { console.error(e); }
 }
 
-// ---- PROVIDERS ----
-function renderProviders(cat) {
-  const grid = document.getElementById('providers-grid');
-  const filtered = cat === 'all' ? providers : providers.filter(p => p.category === cat);
-  grid.innerHTML = filtered.map(p => `
-    <div class="provider-card">
-      <div class="provider-banner" style="background:${p.bg}">${p.icon}</div>
-      <div class="provider-body">
-        <div class="provider-name">${p.name}</div>
-        <div class="provider-type">${p.category.charAt(0).toUpperCase() + p.category.slice(1)}</div>
-        <div class="provider-desc">${p.desc}</div>
-        <div class="provider-meta">
-          <span>📍 ${p.area}</span>
-          <span>⭐ ${p.rating}</span>
-          <span>${p.price}</span>
+async function renderProviders(cat) {
+  try {
+    const res = await window.fetchVendors();
+    let serverVendors = res.data;
+    const grid = document.getElementById('providers-grid');
+    if(serverVendors.length === 0) return grid.innerHTML = '<p>No providers found.</p>';
+    if (cat !== 'all') {
+      serverVendors = serverVendors.filter(p => p.category.toLowerCase() === cat.toLowerCase());
+    }
+    grid.innerHTML = serverVendors.map(p => `
+      <div class="provider-card">
+        <div class="provider-banner" style="background:#1a1a2e">⭐</div>
+        <div class="provider-body">
+          <div class="provider-name">${p.businessName}</div>
+          <div class="provider-type">${p.category}</div>
+          <div class="provider-desc">${p.description}</div>
+          <div class="provider-meta">
+            <span>📍 ${p.location}</span>
+            <span>⭐ ${p.rating} (${p.reviews})</span>
+          </div>
+          ${p.distance ? `<div style="margin: 10px 0; color: #2e7d32; font-weight: bold; font-size: 0.9rem;">📍 ${p.distance} km away (Nearest)</div>` : ''}
+          <button class="provider-contact" onclick="showToast('Contacting ${p.businessName}: ${p.contactPhone}')">Contact Provider</button>
         </div>
-        <button class="provider-contact" onclick="showToast('Contacting ${p.name}: ${p.phone}')">Contact Provider</button>
       </div>
-    </div>
-  `).join('');
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+function recommendNearestVendor() {
+  if (!navigator.geolocation) {
+    showToast("Geolocation is not supported by your browser.");
+    return;
+  }
+  showToast("📍 Accessing your location to find nearby vendors...");
+  
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      // Simulate calculating distances to vendors based on GPS coordinates
+      providers.forEach(p => {
+        // Mock distance between 0.5 and 15.0 km for the demo
+        p.distance = (Math.random() * 14.5 + 0.5).toFixed(1);
+      });
+      
+      // Sort by distance
+      providers.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+      
+      // Reset filters to All and Re-render
+      document.querySelectorAll('.filter-btn').forEach((b,i) => {
+        if(i===0) b.classList.add('active'); else b.classList.remove('active');
+      });
+      
+      renderProviders('all');
+      showToast('✅ Recommended nearest vendors based on your location.');
+    },
+    (error) => {
+      showToast("⚠️ Could not get your location. Please enable GPS.");
+    }
+  );
 }
 
 function filterProviders(btn, cat) {
@@ -867,7 +934,7 @@ function submitProvider() {
 }
 
 // ---- BOOKING ----
-function submitBooking() {
+async function submitBooking() {
   const name = document.getElementById('f-name').value;
   const phone = document.getElementById('f-phone').value;
   const email = document.getElementById('f-email').value;
@@ -875,38 +942,74 @@ function submitBooking() {
   const pkg = document.getElementById('f-package').value;
   const date = document.getElementById('f-date').value;
   const guests = document.getElementById('f-guests').value;
+  const venue = document.getElementById('f-venue').value || 'TBD';
+  
   if (!name || !phone || !type || !pkg || !date) {
     showToast('Please fill in all required fields.'); return;
   }
-  const booking = { name, phone, email, type, pkg, date, guests, submitted: new Date().toLocaleDateString() };
-  bookings.push(booking);
-  const tbody = document.getElementById('bookings-table');
-  if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
-  const row = document.createElement('tr');
-  row.innerHTML = `<td>${name}</td><td>${phone}</td><td>${type}</td><td>${date}</td><td>${pkg}</td><td>${booking.submitted}</td><td><button class="action-btn" onclick="approveProvider(this)">Review</button></td>`;
-  tbody.appendChild(row);
-
+  
   const priceMap = { Bronze: 50000, Silver: 120000, Gold: 280000, Custom: 0 };
   const price = priceMap[pkg] || 0;
-  if (price > 0) {
-    openPayment(pkg, price);
-  } else {
-    showToast('Booking received! We\'ll contact you with a custom quote within 24 hours.');
+  
+  const newEvent = {
+    clientName: name, clientPhone: phone, clientEmail: email || 'no-email@example.com',
+    eventType: type, customEventType: type, eventDate: date, venue,
+    package: pkg, guests: parseInt(guests)||0, specialRequirements: '',
+    amount: price, paymentStatus: 'Pending', amountPaid: 0, status: 'Upcoming',
+    allocatedEquipment: [], assignedTruck: null, createdAt: new Date().toISOString()
+  };
+
+  try {
+    const res = await window.createEvent(newEvent);
+    if (price > 0) {
+      openPayment(pkg, price);
+    } else {
+      showToast('Booking received! We\'ll contact you with a custom quote within 24 hours.');
+      document.getElementById('page-book').querySelector('.form-grid').querySelectorAll('input, select, textarea').forEach(el => el.value = '');
+    }
+  } catch(e) {
+    console.error(e);
+    showToast('Failed to create booking.');
   }
 }
+
+async function renderBookings() {
+  try {
+    const res = await window.fetchEvents();
+    const events = res.data;
+    const tbody = document.getElementById('bookings-table');
+    if (!tbody) return;
+    if (events.length === 0) return tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No pending bookings yet.</td></tr>';
+    tbody.innerHTML = events.map(b => {
+      const badgeClass = b.package ? 'badge-' + b.package.toLowerCase() : '';
+      return `<tr><td>${b.clientName}</td><td>${b.clientPhone}</td><td>${b.eventType}</td><td>${b.eventDate.split('T')[0]}</td><td><span class="badge ${badgeClass}">${b.package}</span></td><td>${b.createdAt.split('T')[0]}</td><td><button class="action-btn" onclick="showToast('Reviewed!')">Review</button></td></tr>`;
+    }).join('');
+
+  } catch(e) { console.error(e); }
+}
+
 
 // ---- PAYMENT ----
 function openPayment(tier, total) {
   currentPayment = { tier, total };
   const deposit = Math.round(total * 0.3);
   const balance = total - deposit;
-  document.getElementById('payment-breakdown').innerHTML = `
-    <div class="pay-row"><span class="pay-label">${tier} Package</span><span>KES ${total.toLocaleString()}</span></div>
-    <div class="pay-row"><span class="pay-label">Deposit (30%)</span><span>KES ${deposit.toLocaleString()}</span></div>
-    <div class="pay-row"><span class="pay-label">Balance (due 7 days before event)</span><span>KES ${balance.toLocaleString()}</span></div>
-    <div class="pay-row"><span class="pay-label">Due Today</span><span>KES ${deposit.toLocaleString()}</span></div>
+  const breakdownHtml = `
+    <div class="payment-breakdown">
+      <div class="pay-row" style="display:flex; justify-content:space-between; margin-bottom:10px;"><span class="pay-label">${tier} Package</span><span>KES ${total.toLocaleString()}</span></div>
+      <div class="pay-row" style="display:flex; justify-content:space-between; margin-bottom:10px;"><span class="pay-label">Deposit (30%)</span><span>KES ${deposit.toLocaleString()}</span></div>
+      <div class="pay-row" style="display:flex; justify-content:space-between; margin-bottom:10px;"><span class="pay-label">Balance (due 7 days before event)</span><span>KES ${balance.toLocaleString()}</span></div>
+      <div class="pay-row" style="display:flex; justify-content:space-between; font-weight: 700; color: var(--dark); font-size: 1.1rem; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px;"><span class="pay-label">Due Today</span><span>KES ${deposit.toLocaleString()}</span></div>
+    </div>
   `;
-  document.getElementById('payment-modal').classList.add('open');
+  const modalBreakdown = document.getElementById('payment-breakdown');
+  if (modalBreakdown) modalBreakdown.innerHTML = breakdownHtml;
+  
+  const checkoutBreakdown = document.getElementById('checkout-breakdown');
+  if (checkoutBreakdown) checkoutBreakdown.innerHTML = breakdownHtml;
+
+  // Use the new checkout page
+  showPage('checkout');
 }
 
 function closePayment() {
@@ -914,36 +1017,95 @@ function closePayment() {
 }
 
 function selectPayMethod(el) {
-  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+  document.querySelectorAll('.pay-method').forEach(m => {
+    m.classList.remove('selected');
+    if(m.tagName === 'BUTTON') m.style.border = '1px solid var(--border)';
+  });
   el.classList.add('selected');
+  if(el.tagName === 'BUTTON') el.style.border = '2px solid var(--gold)';
   
   const method = el.getAttribute('data-method');
-  const promptText = document.getElementById('payment-prompt-text');
-  const paymentInput = document.getElementById('payment-input');
-  const confirmBtn = document.getElementById('btn-confirm-pay');
   
-  paymentInput.style.display = 'block';
-  paymentInput.value = '';
+  const promptTextModal = document.getElementById('payment-prompt-text');
+  const paymentInputModal = document.getElementById('payment-input');
+  const confirmBtnModal = document.getElementById('btn-confirm-pay');
   
-  if (method === 'mpesa') {
-    promptText.textContent = 'Enter your M-Pesa number to receive a payment prompt.';
-    paymentInput.placeholder = 'e.g. 0712345678';
-    confirmBtn.textContent = 'Pay Deposit Now';
-  } else if (method === 'visa') {
-    promptText.textContent = 'Enter your Card Number to proceed securely via Stripe.';
-    paymentInput.placeholder = 'XXXX XXXX XXXX XXXX';
-    confirmBtn.textContent = 'Proceed to Secure Checkout';
-  } else if (method === 'paypal') {
-    promptText.textContent = 'You will be redirected to PayPal (USD) to complete your transaction.';
-    paymentInput.style.display = 'none';
-    confirmBtn.textContent = 'Checkout with PayPal';
-  }
+  const promptTextCheckout = document.getElementById('checkout-payment-prompt-text');
+  const paymentInputCheckout = document.getElementById('checkout-payment-input');
+  const confirmBtnCheckout = document.getElementById('checkout-btn-confirm-pay');
+  
+  const updateUI = (promptText, paymentInput, confirmBtn) => {
+    if (!promptText) return;
+    paymentInput.style.display = 'block';
+    paymentInput.value = '';
+    
+    if (method === 'mpesa') {
+      promptText.textContent = 'Enter your M-Pesa number to receive a payment prompt.';
+      paymentInput.placeholder = 'e.g. 0712345678';
+      confirmBtn.textContent = 'Pay Deposit Now';
+    } else if (method === 'visa') {
+      promptText.textContent = 'Enter your Card Number to proceed securely via Stripe.';
+      paymentInput.placeholder = 'XXXX XXXX XXXX XXXX';
+      confirmBtn.textContent = 'Proceed to Secure Checkout';
+    } else if (method === 'paypal') {
+      promptText.textContent = 'You will be redirected to PayPal (USD) to complete your transaction.';
+      paymentInput.style.display = 'none';
+      confirmBtn.textContent = 'Checkout with PayPal';
+    }
+  };
+  
+  updateUI(promptTextModal, paymentInputModal, confirmBtnModal);
+  updateUI(promptTextCheckout, paymentInputCheckout, confirmBtnCheckout);
 }
 
 function confirmPayment() {
   const selectedMethodEl = document.querySelector('.pay-method.selected');
   const method = selectedMethodEl ? selectedMethodEl.getAttribute('data-method') : 'mpesa';
   
+  // Get the input value (phone number or card number) based on current view
+  const isCheckout = document.getElementById('page-checkout') && document.getElementById('page-checkout').classList.contains('active');
+  const paymentInput = isCheckout 
+    ? document.getElementById('checkout-payment-input').value 
+    : document.getElementById('payment-input').value;
+  
+  if (method === 'mpesa') {
+    if (!paymentInput) {
+      alert("Please enter your M-Pesa number first.");
+      return;
+    }
+    showToast(`An STK Push has been sent to ${paymentInput}. Please check your phone and enter your M-Pesa PIN...`);
+  } else if (method === 'visa') {
+    if (!paymentInput) {
+      alert("Please enter your Card Number first.");
+      return;
+    }
+    showToast(`Processing card ending in ${paymentInput.slice(-4) || paymentInput}. Please authorize on your banking app...`);
+  } else if (method === 'paypal') {
+    showToast(`Redirecting to PayPal for authorization...`);
+  }
+  
+  // Disable the confirm button temporarily
+  const btnConfirmId = isCheckout ? 'checkout-btn-confirm-pay' : 'btn-confirm-pay';
+  const btnConfirm = document.getElementById(btnConfirmId);
+  if (btnConfirm) {
+    btnConfirm.disabled = true;
+    btnConfirm.textContent = 'Processing...';
+  }
+
+  // Simulate waiting for user to authorize on their device (4 seconds)
+  setTimeout(() => {
+    // Re-enable button
+    if (btnConfirm) {
+      btnConfirm.disabled = false;
+      btnConfirm.textContent = 'Pay Deposit Now';
+    }
+    
+    // Proceed with GPS and actual confirmation
+    processAuthorizedPayment(method);
+  }, 4000);
+}
+
+function processAuthorizedPayment(method) {
   // ENFORCE GPS TRACKING ON CUSTOMER BEFORE PROCEEDING
   if (!navigator.geolocation) {
     alert("Your device does not support GPS tracking. GPS is required to complete this booking.");
@@ -958,18 +1120,30 @@ function confirmPayment() {
       window.customerLat = position.coords.latitude;
       window.customerLon = position.coords.longitude;
       
-      closePayment();
+      const totalAmount = currentPayment.total || 50000;
+      const adminCommission = Math.round(totalAmount * 0.20);
       
-      if (method === 'mpesa') {
-        showToast('✅ Payment initiated! Check your phone for the M-Pesa prompt. Your booking is confirmed.');
-      } else if (method === 'visa') {
-        showToast('🔄 Redirecting to secure Visa/Mastercard checkout gateway...');
-      } else if (method === 'paypal') {
-        showToast('🔄 Redirecting to PayPal to complete your transaction securely...');
+      // Update Payments Table with the payment and commission
+      const tbody = document.getElementById('payments-table');
+      if (tbody) {
+        const rowHTML = `<tr><td>New Booking</td><td style="color:var(--gold)">${currentPayment.tier || 'Custom'}</td><td>${totalAmount.toLocaleString()}</td><td>Deposit (30%)</td><td>${method.toUpperCase()}</td><td>${new Date().toLocaleDateString()}</td><td><span class="status-badge status-completed">Paid</span></td></tr>
+        <tr style="background:#f0fff0;"><td>Admin Commission</td><td style="color:var(--gold)">Platform Fee</td><td style="color:green; font-weight:bold;">+${adminCommission.toLocaleString()}</td><td>20% Deduction</td><td>Mobile Wallet</td><td>${new Date().toLocaleDateString()}</td><td><span class="status-badge status-completed">Sent to 07...</span></td></tr>`;
+        tbody.insertAdjacentHTML('afterbegin', rowHTML);
       }
 
+      if (method === 'mpesa') {
+        alert('✅ M-Pesa Payment Successful!\\n\\nPlatform Commission of KES ' + adminCommission.toLocaleString() + ' (20%) has been automatically deducted from vendor payout and sent to Admin Mobile: 0712345678.');
+      } else if (method === 'visa') {
+        alert('✅ Visa Payment Successful!\\n\\nPlatform Commission of KES ' + adminCommission.toLocaleString() + ' (20%) has been automatically deducted from vendor payout and sent to Admin Mobile: 0712345678.');
+      } else if (method === 'paypal') {
+        alert('✅ PayPal Payment Successful!\\n\\nPlatform Commission of KES ' + adminCommission.toLocaleString() + ' (20%) has been automatically deducted from vendor payout and sent to Admin Mobile: 0712345678.');
+      }
+
+      // Randomly select a provider or use default to simulate real vendor assignment
+      const assignedVendor = providers[Math.floor(Math.random() * providers.length)] || { name: 'Assigned Vendor', phone: '+254700000000' };
+
       // Automatically open tracking after payment
-      setTimeout(openGPSTracker, 2500);
+      openGPSTracker(assignedVendor.phone, assignedVendor.name);
     },
     (error) => {
       // GPS denied or failed
@@ -983,83 +1157,90 @@ let trackingMap = null;
 let vendorMarker = null;
 let customerMarker = null;
 
-function openGPSTracker() {
-  document.getElementById('gps-modal').classList.add('open');
+function openGPSTracker(vendorPhone = '+254712345678', vendorName = 'Vendor Delivery') {
+  showPage('tracking');
   
-  const custCoords = document.getElementById('customer-coords');
+  // Update Tracking UI with Vendor details
+  const trackName = document.getElementById('track-vendor-name');
+  if (trackName) trackName.textContent = vendorName;
+  
+  const trackCallBtn = document.getElementById('track-call-btn');
+  if (trackCallBtn) {
+    trackCallBtn.href = 'tel:' + vendorPhone.replace(/\\s+/g, '');
+    trackCallBtn.innerHTML = '📞 Call Vendor';
+  }
+  
   const vendCoords = document.getElementById('vendor-coords');
   const etaDisplay = document.getElementById('eta-display');
   
   // Default coordinates (Nairobi) if customer GPS failed or simulated
   const cLat = window.customerLat || -1.2921;
   const cLon = window.customerLon || 36.8219;
-  
-  if (window.customerLat) {
-    custCoords.textContent = `${cLat.toFixed(4)}, ${cLon.toFixed(4)}`;
-  } else {
-    custCoords.textContent = 'Location enforced & saved.';
-  }
 
-  // Initialize Leaflet Map if it hasn't been initialized yet
-  if (!trackingMap) {
-    trackingMap = L.map('gps-map').setView([cLat, cLon], 13);
-    
-    // Use OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-    }).addTo(trackingMap);
-    
-    // Add customer marker (Blue)
-    customerMarker = L.marker([cLat, cLon]).addTo(trackingMap)
-      .bindPopup('<b>Customer Location</b><br>Delivery Destination').openPopup();
+  // We need a short timeout to let the 'tracking' page become visible and have physical dimensions for Leaflet to render correctly
+  setTimeout(() => {
+    // Initialize Leaflet Map if it hasn't been initialized yet
+    if (!trackingMap) {
+      trackingMap = L.map('gps-map', { zoomControl: false }).setView([cLat, cLon], 13);
       
-    // Add vendor initial marker slightly away (Red)
-    const customIcon = L.icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
-    
-    vendorMarker = L.marker([cLat - 0.05, cLon - 0.05], {icon: customIcon}).addTo(trackingMap)
-      .bindPopup('<b>Vendor Delivery</b><br>En Route');
-  } else {
-    // If map already exists, just recenter and fix display bug for hidden modals
-    setTimeout(() => { trackingMap.invalidateSize(); }, 300);
-  }
-
-  // Simulate vendor moving towards customer
-  let distance = 5.4; // km
-  let vLat = cLat - 0.05;
-  let vLon = cLon - 0.05;
-  
-  window.gpsInterval = setInterval(() => {
-    distance -= 0.12;
-    if (distance < 0) distance = 0;
-    
-    // Move vendor closer to customer
-    vLat += (cLat - vLat) * 0.1;
-    vLon += (cLon - vLon) * 0.1;
-    
-    vendorMarker.setLatLng([vLat, vLon]);
-    vendCoords.textContent = `${vLat.toFixed(4)}, ${vLon.toFixed(4)}`;
-    
-    // Fit bounds to show both markers
-    const group = new L.featureGroup([customerMarker, vendorMarker]);
-    trackingMap.fitBounds(group.getBounds().pad(0.1));
-    
-    if (distance <= 0.1) {
-      etaDisplay.textContent = 'Vendor has arrived!';
-      etaDisplay.style.color = 'green';
-      vendorMarker.bindPopup('<b>Vendor Arrived!</b>').openPopup();
-      clearInterval(window.gpsInterval);
+      // Use OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(trackingMap);
+      
+      // Add customer marker (Blue)
+      customerMarker = L.marker([cLat, cLon]).addTo(trackingMap)
+        .bindPopup('<b>Your Location</b><br>Delivery Destination').openPopup();
+        
+      // Add vendor initial marker slightly away (Custom Car Icon)
+      const carIcon = L.icon({
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/3085/3085330.png',
+        iconSize: [45, 45],
+        iconAnchor: [22, 22],
+        popupAnchor: [0, -22]
+      });
+      
+      vendorMarker = L.marker([cLat - 0.05, cLon - 0.05], {icon: carIcon}).addTo(trackingMap)
+        .bindPopup('<b>Vendor</b><br>En Route');
     } else {
-      etaDisplay.textContent = `ETA: ${Math.ceil(distance * 3)} mins (${distance.toFixed(1)} km away)`;
+      trackingMap.invalidateSize();
+      trackingMap.setView([cLat, cLon]);
     }
-  }, 2000);
+
+    // Simulate vendor moving towards customer
+    let distance = 5.4; // km
+    let vLat = cLat - 0.05;
+    let vLon = cLon - 0.05;
+    
+    if (window.gpsInterval) clearInterval(window.gpsInterval);
+    
+    window.gpsInterval = setInterval(() => {
+      distance -= 0.12;
+      if (distance < 0) distance = 0;
+      
+      // Move vendor closer to customer
+      vLat += (cLat - vLat) * 0.1;
+      vLon += (cLon - vLon) * 0.1;
+      
+      vendorMarker.setLatLng([vLat, vLon]);
+      if(vendCoords) vendCoords.textContent = `${vLat.toFixed(4)}, ${vLon.toFixed(4)}`;
+      
+      // Fit bounds to show both markers smoothly
+      const group = new L.featureGroup([customerMarker, vendorMarker]);
+      trackingMap.fitBounds(group.getBounds().pad(0.1));
+      
+      if (distance <= 0.1) {
+        etaDisplay.textContent = 'Arrived!';
+        etaDisplay.style.background = '#4CAF50';
+        etaDisplay.style.color = '#fff';
+        vendorMarker.bindPopup('<b>Vendor Arrived!</b>').openPopup();
+        clearInterval(window.gpsInterval);
+      } else {
+        etaDisplay.textContent = `${Math.ceil(distance * 3)} min`;
+      }
+    }, 2000);
+  }, 300);
 }
 
 // Add Tracker button to Admin panel (simulate admin viewing the tracker)
@@ -1100,9 +1281,11 @@ function approveProvider(btn) {
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3800);
+  if (t) {
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3800);
+  }
 }
 
 // ---- INIT ----
