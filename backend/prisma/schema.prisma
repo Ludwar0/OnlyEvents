@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Models ────────────────────────────────────────────────────────────────
+
+model User {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  password          String
+  firstName         String
+  lastName          String
+  phone             String?
+  role              String    @default("USER")      // USER | ADMIN | VENDOR
+  isVerified        Boolean   @default(false)
+  verificationToken String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  events            Event[]   @relation("ClientEvents")
+  vendorProfile     Vendor?
+  reviews           Review[]
+  sessions          Session[]
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshToken String   @unique
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+}
+
+model Vendor {
+  id           String   @id @default(uuid())
+  userId       String?  @unique
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName String
+  category     String
+  description  String
+  location     String
+  contactName  String   @default("")
+  contactEmail String
+  contactPhone String
+  rating       Float    @default(0)
+  reviews      Int      @default(0)
+  isFeatured   Boolean  @default(false)
+  isApproved   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  services     VendorService[]
+  vendorReviews Review[]
+}
+
+model VendorService {
+  id          String   @id @default(uuid())
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name        String
+  description String
+  price       Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id                  String    @id @default(uuid())
+  clientId            String?
+  client              User?     @relation("ClientEvents", fields: [clientId], references: [id])
+  clientName          String    @default("")
+  clientEmail         String    @default("")
+  clientPhone         String    @default("")
+  eventType           String    // WEDDING | FUNERAL | RURACIO | CORPORATE | BIRTHDAY | OTHER
+  customEventType     String?
+  eventDate           DateTime
+  venue               String
+  package             String    // BRONZE | SILVER | GOLD
+  guests              Int
+  specialRequirements String?
+  totalAmount         Float
+  amountPaid          Float     @default(0)
+  paymentStatus       String    @default("PENDING")  // PENDING | PARTIAL | PAID | FAILED | REFUNDED
+  status              String    @default("UPCOMING") // UPCOMING | IN_PROGRESS | COMPLETED | CANCELLED
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  payments            Payment[]
+  allocations         EquipmentAllocation[]
+  truckAssignment     Truck?    @relation(fields: [truckId], references: [id])
+  truckId             String?
+}
+
+model Equipment {
+  id                String    @id @default(uuid())
+  name              String
+  category          String
+  totalQuantity     Int
+  availableQuantity Int
+  condition         String    @default("Good")
+  status            String    @default("AVAILABLE") // AVAILABLE | ALLOCATED | MAINTENANCE
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  allocations       EquipmentAllocation[]
+}
+
+model EquipmentAllocation {
+  id          String    @id @default(uuid())
+  eventId     String
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  equipmentId String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  quantity    Int
+  allocatedAt DateTime  @default(now())
+  returnedAt  DateTime?
+}
+
+model Truck {
+  id            String   @id @default(uuid())
+  plateNumber   String   @unique
+  driverName    String
+  driverPhone   String
+  capacity      String
+  status        String   @default("AVAILABLE") // AVAILABLE | EN_ROUTE | AT_VENUE | RETURNING
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  events        Event[]
+}
+
+model Payment {
+  id             String    @id @default(uuid())
+  eventId        String
+  event          Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  amount         Float
+  currency       String    @default("KES")
+  method         String    // M-PESA | CARD | BANK | CASH
+  reference      String?   @unique
+  status         String    @default("PENDING")
+  stripeIntentId String?   @unique
+  receiptUrl     String?
+  paidAt         DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([vendorId, userId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  type      String
+  createdAt DateTime @default(now())
+}
