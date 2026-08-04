@@ -8,6 +8,10 @@
 **/build/
 local.properties
 
+# Database
+*.db
+*.sqlite
+
 # Node dependencies & environment
 node_modules/
 .env
