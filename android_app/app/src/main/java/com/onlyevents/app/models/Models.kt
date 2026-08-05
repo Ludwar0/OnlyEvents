@@ -39,6 +39,9 @@ data class ServiceProvider(
     val name: String,
     val category: String,
     val description: String,
+    val longDescription: String = "",
+    val specialties: List<String> = emptyList(),
+    val reviewsCount: Int = 0,
     val priceTag: String,
     val serviceArea: String,
     val rating: String,
@@ -75,4 +78,19 @@ data class PaymentRecord(
     val method: String,
     val date: String,
     val status: String = "Paid"
+)
+
+data class ChatMessage(
+    val id: String,
+    val senderId: String, // "User" or Provider ID
+    val text: String,
+    val timestamp: String,
+    val isFromUser: Boolean
+)
+
+data class ChatSession(
+    val providerId: String,
+    val providerName: String,
+    val lastMessage: String,
+    val messages: List<ChatMessage>
 )

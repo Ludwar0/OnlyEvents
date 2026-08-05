@@ -1,5 +1,6 @@
 package com.onlyevents.app.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -7,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +33,9 @@ fun MarketplaceScreen(viewModel: OnlyEventsViewModel) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             items(providers) { provider ->
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.selectProvider(provider) },
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C22)),
                     shape = RoundedCornerShape(14.dp)
                 ) {
@@ -50,11 +54,23 @@ fun MarketplaceScreen(viewModel: OnlyEventsViewModel) {
                             }
                             Text(provider.description, color = Color.Gray, fontSize = 12.sp)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text(provider.priceTag, color = GoldPrimary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(provider.priceTag, color = GoldPrimary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                Text("View Details →", color = Color.Gray, fontSize = 10.sp)
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    val selectedProvider = viewModel.selectedProvider.collectAsState().value
+    if (selectedProvider != null) {
+        ProviderDetailDialog(viewModel = viewModel, provider = selectedProvider)
     }
 }

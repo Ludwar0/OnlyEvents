@@ -11,9 +11,20 @@ import androidx.compose.ui.graphics.Color
 import com.onlyevents.app.ui.theme.GoldPrimary
 import com.onlyevents.app.viewmodel.OnlyEventsViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(viewModel: OnlyEventsViewModel) {
+    val isLoggedIn = viewModel.isLoggedIn.collectAsState().value
+
+    if (!isLoggedIn) {
+        LoginScreen(viewModel = viewModel)
+    } else {
+        AppContent(viewModel = viewModel)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppContent(viewModel: OnlyEventsViewModel) {
     val selectedTab = viewModel.selectedTab.collectAsState().value
     val showPayment = viewModel.showPaymentDialog.collectAsState().value
     val showReceipt = viewModel.showReceiptDialog.collectAsState().value
@@ -67,6 +78,13 @@ fun MainScreen(viewModel: OnlyEventsViewModel) {
                     colors = NavigationBarItemDefaults.colors(selectedIconColor = GoldPrimary, selectedTextColor = GoldPrimary)
                 )
                 NavigationBarItem(
+                    selected = selectedTab == 5,
+                    onClick = { viewModel.selectTab(5) },
+                    icon = { Icon(Icons.Default.ChatBubble, contentDescription = "Messages") },
+                    label = { Text("Messages") },
+                    colors = NavigationBarItemDefaults.colors(selectedIconColor = GoldPrimary, selectedTextColor = GoldPrimary)
+                )
+                NavigationBarItem(
                     selected = selectedTab == 4,
                     onClick = { viewModel.selectTab(4) },
                     icon = { Icon(Icons.Default.Settings, contentDescription = "Admin") },
@@ -87,6 +105,7 @@ fun MainScreen(viewModel: OnlyEventsViewModel) {
                 2 -> PricingScreen(viewModel)
                 3 -> MarketplaceScreen(viewModel)
                 4 -> AdminScreen(viewModel)
+                5 -> ChatScreen(viewModel)
             }
         }
     }

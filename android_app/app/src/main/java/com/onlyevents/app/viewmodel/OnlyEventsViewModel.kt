@@ -8,6 +8,12 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class OnlyEventsViewModel : ViewModel() {
 
+    private val _isLoggedIn = MutableStateFlow(false)
+    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
+
+    private val _userLocation = MutableStateFlow<String?>("Nairobi, Kenya")
+    val userLocation: StateFlow<String?> = _userLocation.asStateFlow()
+
     private val _selectedTab = MutableStateFlow(0)
     val selectedTab: StateFlow<Int> = _selectedTab.asStateFlow()
 
@@ -17,6 +23,9 @@ class OnlyEventsViewModel : ViewModel() {
     private val _providers = MutableStateFlow<List<ServiceProvider>>(emptyList())
     val providers: StateFlow<List<ServiceProvider>> = _providers.asStateFlow()
 
+    private val _selectedProvider = MutableStateFlow<ServiceProvider?>(null)
+    val selectedProvider: StateFlow<ServiceProvider?> = _selectedProvider.asStateFlow()
+
     private val _trucks = MutableStateFlow<List<FleetTruck>>(emptyList())
     val trucks: StateFlow<List<FleetTruck>> = _trucks.asStateFlow()
 
@@ -25,6 +34,12 @@ class OnlyEventsViewModel : ViewModel() {
 
     private val _payments = MutableStateFlow<List<PaymentRecord>>(emptyList())
     val payments: StateFlow<List<PaymentRecord>> = _payments.asStateFlow()
+
+    private val _chatSessions = MutableStateFlow<List<ChatSession>>(emptyList())
+    val chatSessions: StateFlow<List<ChatSession>> = _chatSessions.asStateFlow()
+
+    private val _activeChat = MutableStateFlow<ChatSession?>(null)
+    val activeChat: StateFlow<ChatSession?> = _activeChat.asStateFlow()
 
     private val _toastMessage = MutableStateFlow<String?>(null)
     val toastMessage: StateFlow<String?> = _toastMessage.asStateFlow()
@@ -38,6 +53,11 @@ class OnlyEventsViewModel : ViewModel() {
     var formDate = "2026-08-15"
     var formGuests = "150"
     var formVenue = "Karen, Nairobi"
+    var formTime = "10:00 AM"
+
+    val eventTypes = listOf("Wedding", "Ruracio", "Corporate", "Birthday", "Graduation", "Baby Shower", "Memorial")
+    val packageTiers = listOf("Bronze", "Silver", "Gold")
+    val recommendedVenues = listOf("Karen Blixen", "Safari Park", "Windsor Golf", "KICC", "Two Rivers", "Panari Hotel")
 
     // Dialog flags
     private val _showPaymentDialog = MutableStateFlow(false)
@@ -63,10 +83,62 @@ class OnlyEventsViewModel : ViewModel() {
         )
 
         _providers.value = listOf(
-            ServiceProvider("PRV-001", "Mama's Kitchen", "catering", "Award-winning caterers specialising in Kenyan buffet menus.", "From KES 1,500/head", "Nairobi, Kiambu", "4.9 ★", "+254 712 000 001", "🍲"),
-            ServiceProvider("PRV-002", "Snap & Story", "photography", "Cinematic wedding and event photography with drone coverage.", "From KES 25,000", "Nairobi, Kiambu", "4.8 ★", "+254 723 000 002", "📸"),
-            ServiceProvider("PRV-003", "Bloom & Drape", "decor", "Luxury floral arrangements & venue draping.", "From KES 30,000", "Nairobi", "4.7 ★", "+254 745 000 004", "🌸"),
-            ServiceProvider("PRV-004", "DJ Karura", "entertainment", "Professional DJ with 10+ years experience for all events.", "From KES 15,000", "Nairobi", "4.6 ★", "+254 734 000 003", "🎧")
+            ServiceProvider(
+                id = "PRV-001",
+                name = "Mama's Kitchen",
+                category = "catering",
+                description = "Award-winning caterers specialising in Kenyan buffet menus.",
+                longDescription = "Mama's Kitchen has been serving exquisite Kenyan cuisine for over 15 years. We pride ourselves on using organic local ingredients and authentic recipes passed down through generations. From grand weddings to intimate family gatherings, we ensure every guest leaves satisfied.",
+                specialties = listOf("Nyama Choma", "Pilau Special", "Traditional Greens", "Fresh Juices"),
+                reviewsCount = 450,
+                priceTag = "From KES 1,500/head",
+                serviceArea = "Nairobi, Kiambu",
+                rating = "4.9 ★",
+                phone = "+254 712 000 001",
+                icon = "🍲"
+            ),
+            ServiceProvider(
+                id = "PRV-002",
+                name = "Snap & Story",
+                category = "photography",
+                description = "Cinematic wedding and event photography with drone coverage.",
+                longDescription = "Capturing moments that last a lifetime. Snap & Story brings a cinematic perspective to your special events. We offer 4K video coverage, aerial drone shots, and professional photo editing with quick delivery times.",
+                specialties = listOf("Wedding Portraits", "Event Highlights", "Drone Cinematography", "Photo Books"),
+                reviewsCount = 280,
+                priceTag = "From KES 25,000",
+                serviceArea = "Nairobi, Kiambu",
+                rating = "4.8 ★",
+                phone = "+254 723 000 002",
+                icon = "📸"
+            ),
+            ServiceProvider(
+                id = "PRV-003",
+                name = "Bloom & Drape",
+                category = "decor",
+                description = "Luxury floral arrangements & venue draping.",
+                longDescription = "We transform ordinary venues into extraordinary spaces. Bloom & Drape specializes in high-end floral installations, exotic flowers, and creative draping that matches your event's theme and color palette.",
+                specialties = listOf("Floral Arches", "Table Centerpieces", "Mood Lighting", "Textile Draping"),
+                reviewsCount = 190,
+                priceTag = "From KES 30,000",
+                serviceArea = "Nairobi",
+                rating = "4.7 ★",
+                phone = "+254 745 000 004",
+                icon = "🌸"
+            ),
+            ServiceProvider(
+                id = "PRV-004",
+                name = "DJ Karura",
+                category = "entertainment",
+                description = "Professional DJ with 10+ years experience for all events.",
+                longDescription = "The pulse of your party. DJ Karura knows how to read the crowd and keep the dance floor packed. With a vast library covering everything from Genge to global hits, we bring the best sound equipment and lighting.",
+                specialties = listOf("Live Mixing", "MC Services", "Sound System Hire", "Party Lighting"),
+                reviewsCount = 320,
+                priceTag = "From KES 15,000",
+                serviceArea = "Nairobi",
+                rating = "4.6 ★",
+                phone = "+254 734 000 003",
+                icon = "🎧"
+            )
         )
 
         _trucks.value = listOf(
@@ -90,6 +162,72 @@ class OnlyEventsViewModel : ViewModel() {
 
     fun selectTab(index: Int) {
         _selectedTab.value = index
+    }
+
+    fun login(email: String, pass: String, onLoginSuccess: () -> Unit) {
+        if (email.contains("@") && pass.length >= 4) {
+            _isLoggedIn.value = true
+            showToast("Welcome back, $email!")
+            onLoginSuccess()
+        } else {
+            showToast("Invalid credentials. Try again.")
+        }
+    }
+
+    fun openChat(provider: ServiceProvider) {
+        val existing = _chatSessions.value.find { it.providerId == provider.id }
+        if (existing != null) {
+            _activeChat.value = existing
+        } else {
+            val newSession = ChatSession(
+                providerId = provider.id,
+                providerName = provider.name,
+                lastMessage = "Start a conversation",
+                messages = emptyList()
+            )
+            _chatSessions.value = _chatSessions.value + newSession
+            _activeChat.value = newSession
+        }
+        selectTab(5) // New Messages tab
+    }
+
+    fun sendMessage(text: String) {
+        val currentChat = _activeChat.value ?: return
+        if (text.isBlank()) return
+
+        val newMessage = ChatMessage(
+            id = System.currentTimeMillis().toString(),
+            senderId = "User",
+            text = text,
+            timestamp = "Just now",
+            isFromUser = true
+        )
+
+        val updatedSession = currentChat.copy(
+            messages = currentChat.messages + newMessage,
+            lastMessage = text
+        )
+
+        _chatSessions.value = _chatSessions.value.map {
+            if (it.providerId == currentChat.providerId) updatedSession else it
+        }
+        _activeChat.value = updatedSession
+    }
+
+    fun updateFormDate(date: String) { formDate = date }
+    fun updateFormTime(time: String) { formTime = time }
+    fun updateFormVenue(venue: String) { formVenue = venue }
+
+    fun logout() {
+        _isLoggedIn.value = false
+    }
+
+    fun updateLocation(location: String) {
+        _userLocation.value = location
+    }
+
+    fun selectProvider(provider: ServiceProvider?) {
+        _selectedProvider.value = provider
     }
 
     fun submitBooking() {

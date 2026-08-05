@@ -9,20 +9,27 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.onlyevents.app.MainActivity
 import com.onlyevents.app.models.EventCategory
 import com.onlyevents.app.ui.theme.GoldPrimary
 import com.onlyevents.app.viewmodel.OnlyEventsViewModel
 
 @Composable
 fun HomeScreen(viewModel: OnlyEventsViewModel) {
+    val context = LocalContext.current
+    val userLocation = viewModel.userLocation.collectAsState().value
     val categories = listOf(
         EventCategory("Wedding", "💒", "Ceremony & reception"),
         EventCategory("Ruracio", "🤝", "Traditional dowry"),
@@ -76,6 +83,19 @@ fun HomeScreen(viewModel: OnlyEventsViewModel) {
                     fontSize = 13.sp,
                     color = Color.Gray
                 )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            (context as? MainActivity)?.requestLocationPermission()
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(Icons.Default.LocationOn, contentDescription = null, tint = GoldPrimary, modifier = Modifier.size(16.dp))
+                    Text(text = userLocation ?: "Set Location", color = Color.White, fontSize = 12.sp)
+                }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     Button(

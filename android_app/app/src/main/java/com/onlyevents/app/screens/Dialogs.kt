@@ -8,8 +8,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.onlyevents.app.models.ServiceProvider
 import com.onlyevents.app.ui.theme.GoldPrimary
 import com.onlyevents.app.viewmodel.OnlyEventsViewModel
 
@@ -118,6 +120,82 @@ fun LiveTrackerDialog(viewModel: OnlyEventsViewModel) {
         confirmButton = {
             TextButton(onClick = { viewModel.dismissLiveTracker() }) {
                 Text("Close Tracker")
+            }
+        }
+    )
+}
+
+@Composable
+fun ProviderDetailDialog(viewModel: OnlyEventsViewModel, provider: ServiceProvider) {
+    AlertDialog(
+        onDismissRequest = { viewModel.selectProvider(null) },
+        title = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(provider.icon, fontSize = 28.sp)
+                Column {
+                    Text(provider.name, fontWeight = FontWeight.Bold, color = Color.White, fontSize = 18.sp)
+                    Text(provider.rating, color = GoldPrimary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(provider.longDescription, color = Color.White, fontSize = 13.sp, lineHeight = 18.sp)
+                
+                Text("Specialties:", fontWeight = FontWeight.Bold, color = GoldPrimary, fontSize = 14.sp)
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    provider.specialties.forEach { spec ->
+                        Text("• $spec", color = Color.Gray, fontSize = 12.sp)
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text("Reviews", color = Color.Gray, fontSize = 11.sp)
+                        Text("${provider.reviewsCount}+", fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text("Area", color = Color.Gray, fontSize = 11.sp)
+                        Text(provider.serviceArea, fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                }
+
+                Surface(
+                    color = Color.DarkGray.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = provider.priceTag,
+                        modifier = Modifier.padding(10.dp),
+                        color = GoldPrimary,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { 
+                    viewModel.openChat(provider)
+                    viewModel.selectProvider(null)
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = GoldPrimary)
+            ) {
+                Text("Chat with Provider", color = Color.Black, fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { viewModel.selectProvider(null) }) {
+                Text("Close")
             }
         }
     )
