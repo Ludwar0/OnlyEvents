@@ -5,6 +5,8 @@ pluginManagement {
                 includeGroupByRegex("com\\.android.*")
                 includeGroupByRegex("com\\.google.*")
                 includeGroupByRegex("androidx.*")
+                // Added for Kotlin Symbol Processing if used
+                includeGroup("com.google.devtools.ksp")
             }
         }
         mavenCentral()
@@ -24,3 +26,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "OnlyEvents"
 include(":app")
+
