@@ -1,0 +1,6 @@
+{"level":"warn","message":"⚠️  WebSocket service skipped: ⨯ Unable to compile TypeScript:\nsrc/sockets/index.ts(1,50): error TS2307: Cannot find module 'socket.io' or its corresponding type declarations.\r\nsrc/sockets/index.ts(24,34): error TS7006: Parameter 'next' implicitly has an 'any' type.\r\n","timestamp":"2026-07-27 19:31:02"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2026-07-27 19:31:02"}
+{"level":"info","message":"🌐 Frontend: http://localhost:5000","timestamp":"2026-07-27 19:31:02"}
+{"level":"info","message":"🔌 API:      http://localhost:5000/api/v1","timestamp":"2026-07-27 19:31:02"}
+{"level":"info","message":"❤️  Health:  http://localhost:5000/health","timestamp":"2026-07-27 19:31:02"}
+{"level":"info","message":"📦 Connected to PostgreSQL database","timestamp":"2026-07-27 19:31:02"}
